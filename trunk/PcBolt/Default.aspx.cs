@@ -8,6 +8,7 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
+using PcBolt.DAO;
 
 namespace PcBolt
 {
@@ -15,7 +16,13 @@ namespace PcBolt
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
         }
+
+        protected void szovegCsere(object sender, EventArgs e)
+        {
+            cimke.Text = Adatbazis.GetFelhasznaloNev();
+        }
+
+        
     }
 }
