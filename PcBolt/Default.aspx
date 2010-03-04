@@ -8,8 +8,9 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>
-    PC Bolt 0.0001
+    <div id="szoveg">
+    <asp:Label Text="szoveg" runat="server" ID="cimke" onload="szovegCsere"></asp:Label>
+    
     </div>
     </form>
 </body>
