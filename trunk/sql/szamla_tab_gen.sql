@@ -1,6 +1,5 @@
 drop table szamla_tab;
 drop sequence szamla_seq;
-drop trigger szamla_tri;
 
 create sequence szamla_seq
 	start with 1

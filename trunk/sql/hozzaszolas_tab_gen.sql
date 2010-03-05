@@ -1,6 +1,5 @@
 drop table hozzaszolas_tab;
 drop sequence hozzaszolas_seq;
-drop trigger hozzaszolas_tri;
 
 create sequence hozzaszolas_seq
 	start with 1
@@ -13,7 +12,7 @@ create table hozzaszolas_tab (
 	id 			number primary key,
 	aru			number references raktar_tab(id),
 	felhasz		number references felhasznalo_tab(id),
-	datum		date,
+	datum		timestamp,
 	szoveg		varchar2(4000)
 );
 

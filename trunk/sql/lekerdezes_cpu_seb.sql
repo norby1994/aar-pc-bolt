@@ -1,1 +1,0 @@
-select treat(value(p) as cpu_typ).sebesség from raktar_tab p;
