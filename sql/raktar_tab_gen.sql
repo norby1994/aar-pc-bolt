@@ -1,6 +1,5 @@
 drop sequence raktar_seq;
 drop table raktar_tab;
-drop trigger raktar_tri;
 
 create sequence raktar_seq
 	start with 1
@@ -18,5 +17,10 @@ create trigger raktar_tri
 	for each row
 	begin
 		select raktar_seq.nextval into :sor.id from dual;
+		--if (:sor is of type (cpu_typ)) then
+		--	:sor.leiras := 'cpu vagy barmi';
+		--end if;
+			
+		
 	end raktar_tri;
 /

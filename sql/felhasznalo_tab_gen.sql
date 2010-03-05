@@ -22,6 +22,8 @@ create trigger felhasznalo_tri
 	for each row
 	begin
 		select felhasznalo_seq.nextval into :new.id from dual;
-		new.torolt = 0;
+		:new.id := 0;
+		--select 0 into :new.id from dual;
+		
 	end;
 /
