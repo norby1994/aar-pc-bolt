@@ -8,14 +8,14 @@ namespace PcBolt.Beans
     /// </summary>
     public abstract class Szemely
     {
-        int id = -1;
+        long id = -1;
         string felhasznaloNev = null;
 
 
         /// <summary>
         /// A szemely ID-je az adatbazisban
         /// </summary>
-        public int Id
+        public long Id
         {
             get { return id; }
             set { id = value; }
