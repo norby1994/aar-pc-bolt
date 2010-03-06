@@ -1,5 +1,4 @@
 drop sequence felhasznalo_seq;
-drop trigger felhasznalo_tri;
 drop table felhasznalo_tab;
 
 create sequence felhasznalo_seq
@@ -10,19 +9,20 @@ create sequence felhasznalo_seq
 
 create table felhasznalo_tab (
 	id				number primary key,
-	felhasznev		varchar2(20),
+	felhasznev		varchar2(20) not null unique,
 	teljesnev		varchar2(100),
 	varos			varchar2(20),
 	utca			varchar2(50),
-	torolt			number(1))
-;
+	torolt			number(1),
+	jelszo			varchar2(20) not null
+);
 
 create trigger felhasznalo_tri
 	before insert on felhasznalo_tab
 	for each row
 	begin
 		select felhasznalo_seq.nextval into :new.id from dual;
-		:new.id := 0;
+		:new.torolt := 0;
 		--select 0 into :new.id from dual;
 		
 	end;
