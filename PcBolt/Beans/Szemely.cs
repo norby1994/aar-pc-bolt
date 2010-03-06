@@ -9,8 +9,9 @@ namespace PcBolt.Beans
     public abstract class Szemely
     {
         long id = -1;
-        string felhasznaloNev = null;
+        string felhasznaloNev = "";
 
+        public Szemely() { }
 
         /// <summary>
         /// A szemely ID-je az adatbazisban

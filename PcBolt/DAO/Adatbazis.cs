@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Data;
 using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
 using PcBolt.Beans;
 using Oracle.DataAccess.Client;
+using Oracle.DataAccess.Types;
 
 namespace PcBolt.DAO
 {
     public static class Adatbazis
     {
         static string oradb = "Data Source=XE;User Id=peti; Password=peti;"; 
-            
+        static string felhasznalo_tab = "felhasznalo_tab";    
             /*"Data Source=(DESCRIPTION="
              + "(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=8080)))"
              + "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));"
@@ -26,7 +21,7 @@ namespace PcBolt.DAO
 
         static OracleConnection connection = new OracleConnection(oradb);
         static string sqlKod;
-        static OracleCommand lekerdezes = new OracleCommand("", connection);
+        static OracleCommand command = new OracleCommand("", connection);
 
 
 
@@ -36,16 +31,40 @@ namespace PcBolt.DAO
             {
                 connection.Open();
                 sqlKod = "select * from felhasznalo_tab;";
-                lekerdezes.CommandText = sqlKod;
-                OracleDataReader dr = lekerdezes.ExecuteReader();
+                command.CommandText = sqlKod;
+                OracleDataReader dr = command.ExecuteReader();
                 dr.Read();
-                return dr["felhasznev"].ToString() + "</br>" + dr["teljesnev"].ToString() ;
+                return "semmi";
             }
             finally
             {
                 connection.Close();
             }
         }
+
+        public static void AddUjFelhasznalo(Felhasznalo f, string jelszo)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "insert into " + felhasznalo_tab +
+                    "(felhasznev, jelszo, varos) " +
+                    "values( :fnev, :jel, :varos)";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":fnev", f.FelhasznaloNev));
+                command.Parameters.Add(new OracleParameter(":jel", jelszo));
+                
+               
+                command.ExecuteNonQuery();
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+        }
+
+
 
 
     }

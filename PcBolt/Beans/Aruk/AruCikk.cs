@@ -20,7 +20,7 @@ namespace PcBolt.Beans.Aruk
 
 
 
-        long id = -1;
+        long id = 0;
 
         public long Id
         {
@@ -34,7 +34,7 @@ namespace PcBolt.Beans.Aruk
             get { return nev; }
             set { nev = value; }
         }
-        int ar = -1;
+        int ar = 0;
 
         public int Ar
         {
@@ -48,7 +48,7 @@ namespace PcBolt.Beans.Aruk
             get { return leiras; }
             set { leiras = value; }
         }
-        double akcioSzazalek = -1;
+        double akcioSzazalek = 100;
 
         public double AkcioSzazalek
         {
@@ -63,7 +63,7 @@ namespace PcBolt.Beans.Aruk
             set { akcios = value; }
         }
 
-        long gyartoId = -1;
+        long gyartoId = 0;
 
         public long GyartoId
         {

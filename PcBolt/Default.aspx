@@ -11,6 +11,13 @@
     <div id="szoveg">
     <asp:Label Text="szoveg" runat="server" ID="cimke" onload="szovegCsere"></asp:Label>
     
+        <br />
+        <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
+&nbsp;<br />
+        <asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
+        <br />
+        <asp:Button ID="Button1" runat="server" onclick="Button1_Click" Text="Button" />
+    
     </div>
     </form>
 </body>
