@@ -9,6 +9,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using PcBolt.DAO;
+using PcBolt.Beans;
 
 namespace PcBolt
 {
@@ -20,7 +21,14 @@ namespace PcBolt
 
         protected void szovegCsere(object sender, EventArgs e)
         {
-            cimke.Text = Adatbazis.GetFelhasznaloNev();
+            //cimke.Text = Adatbazis.GetFelhasznaloNev();
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            Felhasznalo felh = new Felhasznalo();
+            felh.FelhasznaloNev = TextBox1.Text;
+            Adatbazis.AddUjFelhasznalo(felh, TextBox2.Text);
         }
 
         

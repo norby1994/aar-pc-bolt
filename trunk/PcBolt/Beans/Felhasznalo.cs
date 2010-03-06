@@ -10,11 +10,15 @@ using System.Web.UI.WebControls.WebParts;
 
 namespace PcBolt.Beans
 {
+    
+
     public class Felhasznalo : Szemely
     {
-        string varos = null;
-        string iranyitoszam = null;
-        string utca = null;
+        string varos = "";
+        string iranyitoszam = "";
+        string utca = "";
+
+        public Felhasznalo() { }
 
         public Felhasznalo(int id, string felhasznaloNev, string varos, string utca, string iranyitoszam)
         {
