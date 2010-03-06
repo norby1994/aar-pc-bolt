@@ -13,6 +13,7 @@ create table felhasznalo_tab (
 	teljesnev		varchar2(100),
 	varos			varchar2(20),
 	utca			varchar2(50),
+	iranyitoszam	varchar2(4),
 	torolt			number(1),
 	jelszo			varchar2(20) not null
 );
