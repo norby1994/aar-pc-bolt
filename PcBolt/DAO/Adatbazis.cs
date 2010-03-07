@@ -4,6 +4,7 @@ using System.Configuration;
 using PcBolt.Beans;
 using Oracle.DataAccess.Client;
 using Oracle.DataAccess.Types;
+using PcBolt.Exceptions;
 
 namespace PcBolt.DAO
 {
@@ -31,9 +32,11 @@ namespace PcBolt.DAO
             {
                 connection.Open();
                 sqlKod = "select * from felhasznalo_tab;";
-                command.CommandText = sqlKod;
+                command = new OracleCommand(sqlKod, connection);
                 OracleDataReader dr = command.ExecuteReader();
                 dr.Read();
+                OracleString os = dr.GetOracleString(1);
+
                 return "semmi";
             }
             finally
@@ -48,13 +51,15 @@ namespace PcBolt.DAO
             {
                 connection.Open();
                 sqlKod = "insert into " + felhasznalo_tab +
-                    "(felhasznev, jelszo, varos) " +
-                    "values( :fnev, :jel, :varos)";
+                    "(felhasznev, jelszo, teljesnev, varos, utca, iranyitoszam) " +
+                    "values( :fnev, :jel, :teljesnev, :varos, :utca, :iranyitoszam)";
                 command = new OracleCommand(sqlKod, connection);
                 command.Parameters.Add(new OracleParameter(":fnev", f.FelhasznaloNev));
                 command.Parameters.Add(new OracleParameter(":jel", jelszo));
-                
-               
+                command.Parameters.Add(new OracleParameter(":teljesnev", f.Teljesnev));
+                command.Parameters.Add(new OracleParameter(":varos", f.Varos));
+                command.Parameters.Add(new OracleParameter(":utca", f.Utca));
+                command.Parameters.Add(new OracleParameter(":iranyitoszam", f.Iranyitoszam));
                 command.ExecuteNonQuery();
             }
             finally
@@ -64,6 +69,42 @@ namespace PcBolt.DAO
 
         }
 
+        public static Felhasznalo GetFelhasznalo(string felhasznaloNev)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select * from " + felhasznalo_tab +
+                    " where felhasznev like :felhasznev";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":felhasznev",felhasznaloNev));
+                OracleDataReader odr = command.ExecuteReader();
+                string s = command.CommandText;
+                Felhasznalo ki = new Felhasznalo();
+
+                if (odr.Read())
+                {
+                    ki.Id = Convert.ToInt64(odr["id"]);
+                    ki.FelhasznaloNev = Convert.ToString(odr["felhasznev"]);
+                    ki.Teljesnev = Convert.ToString(odr["teljesnev"]);
+                    ki.Varos = Convert.ToString(odr["varos"]);
+                    ki.Utca = Convert.ToString(odr["utca"]);
+                    ki.Iranyitoszam = Convert.ToString(odr["iranyitoszam"]);
+                }
+                else
+                {
+                    throw new NincsIlyenFelhasznaloException();
+                }
+                return ki;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return null;
+
+        }
 
 
 

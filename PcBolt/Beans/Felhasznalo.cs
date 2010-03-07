@@ -17,6 +17,9 @@ namespace PcBolt.Beans
         string varos = "";
         string iranyitoszam = "";
         string utca = "";
+        string teljesnev = "";
+
+      
 
         public Felhasznalo() { }
 
@@ -51,6 +54,12 @@ namespace PcBolt.Beans
         public string TeljesCim
         {
             get { return Iranyitoszam + " " + Varos + ", " + Utca; }
+        }
+
+        public string Teljesnev
+        {
+            get { return teljesnev; }
+            set { teljesnev = value; }
         }
         
     }
