@@ -26,9 +26,10 @@ namespace PcBolt
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            Felhasznalo felh = new Felhasznalo();
-            felh.FelhasznaloNev = TextBox1.Text;
-            Adatbazis.AddUjFelhasznalo(felh, TextBox2.Text);
+            Felhasznalo fh;
+            //Adatbazis.GetFelhasznaloNev();
+            fh = Adatbazis.GetFelhasznalo(TextBox1.Text);
+            Console.WriteLine();
         }
 
         
