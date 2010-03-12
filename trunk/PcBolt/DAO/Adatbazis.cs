@@ -5,6 +5,7 @@ using PcBolt.Beans;
 using Oracle.DataAccess.Client;
 using Oracle.DataAccess.Types;
 using PcBolt.Exceptions;
+using System.Collections;
 
 namespace PcBolt.DAO
 {
@@ -12,6 +13,7 @@ namespace PcBolt.DAO
     {
         static string oradb = "Data Source=XE;User Id=peti; Password=peti;"; 
         static string felhasznalo_tab = "felhasznalo_tab";    
+        static string cpu_foglalat_tab = "cpu_foglalat_tab";
             /*"Data Source=(DESCRIPTION="
              + "(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=8080)))"
              + "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));"
@@ -45,7 +47,39 @@ namespace PcBolt.DAO
             }
         }
 
-        public static void AddUjFelhasznalo(Felhasznalo f, string jelszo)
+        // FELHASZNALOKEZELES
+
+        /// <summary>
+        /// Letezik-e az adott felhasznalonev
+        /// </summary>
+        /// <param name="felhasznev"></param>
+        /// <returns></returns>
+        public static bool FelhasznaloLetezik(string felhasznev)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select felhasznev from "+ felhasznalo_tab+
+                    " where felhasznev like :felhasznev";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":felhasznev",felhasznev));
+                OracleDataReader odr = command.ExecuteReader();
+                return odr.HasRows;
+                
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+        }
+
+        /// <summary>
+        /// Uj felhasznalot tesz az adatbazisba
+        /// </summary>
+        /// <param name="f">Uj felhasznalo</param>
+        /// <param name="jelszo">felhasznalo jelszava</param>
+        public static void AddFelhasznalo(Felhasznalo f, string jelszo)
         {
             try
             {
@@ -69,6 +103,11 @@ namespace PcBolt.DAO
 
         }
 
+        /// <summary>
+        /// Felhasznalonev alapjan visszaadja a felhasznalot az adatbazisbol
+        /// </summary>
+        /// <param name="felhasznaloNev">Keresett felhasznalo</param>
+        /// <returns>Felhasznalo, vagy exception</returns>
         public static Felhasznalo GetFelhasznalo(string felhasznaloNev)
         {
             try
@@ -106,6 +145,52 @@ namespace PcBolt.DAO
 
         }
 
+        // CPU KEZELES
+
+        /// <summary>
+        /// Uj processor foglalatot ad hozza az adatbazishoz
+        /// </summary>
+        /// <param name="nev">Foglalat neve</param>
+        public static void AddProcesszorFoglala(string nev)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "insert into " + cpu_foglalat_tab +
+                    " (nev) values (:nev)";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":nev", nev));
+                command.ExecuteNonQuery();
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public static Hashtable GetProcesszorFoglalatok()
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select * from " + cpu_foglalat_tab;
+                command = new OracleCommand(sqlKod, connection);
+                OracleDataReader odr = command.ExecuteReader();
+                Hashtable ki = new Hashtable();
+                while (odr.Read())
+                {
+                    long id = Convert.ToInt64(odr["id"]);
+                    string nev = Convert.ToString(odr["nev"]).Trim();
+                    ki.Add(id,nev);
+                }
+
+                return ki;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
 
 
     }

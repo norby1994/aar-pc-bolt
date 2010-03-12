@@ -19,6 +19,10 @@
         <asp:Button ID="Button1" runat="server" onclick="Button1_Click" Text="Button" />
     
     </div>
+    <p>
+        <asp:TextBox ID="TextBoxKonzol" runat="server" Height="190px" 
+            TextMode="MultiLine" Width="490px"></asp:TextBox>
+    </p>
     </form>
 </body>
 </html>
