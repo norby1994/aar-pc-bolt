@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Configuration;
+
 using System.Data;
 using System.Web;
 using System.Web.Security;
@@ -26,10 +27,13 @@ namespace PcBolt
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            Felhasznalo fh;
-            //Adatbazis.GetFelhasznaloNev();
-            fh = Adatbazis.GetFelhasznalo(TextBox1.Text);
-            Console.WriteLine();
+            Hashtable table = Adatbazis.GetProcesszorFoglalatok();
+
+            foreach (long key in table.Keys)
+            {
+                TextBoxKonzol.Text += key + "   -   " + table[key] + "\n";
+            }
+
         }
 
         
