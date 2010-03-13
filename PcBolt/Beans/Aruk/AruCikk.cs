@@ -17,9 +17,7 @@ namespace PcBolt.Beans.Aruk
 
         }
 
-
-
-
+        #region Adattag definialas
         long id = 0;
 
         public long Id
@@ -27,8 +25,12 @@ namespace PcBolt.Beans.Aruk
             get { return id; }
             set { id = value; }
         }
+        
         string nev = "";
 
+        /// <summary>
+        /// Arucikk elnevezese
+        /// </summary>
         public string Nev
         {
             get { return nev; }
@@ -36,6 +38,9 @@ namespace PcBolt.Beans.Aruk
         }
         int ar = 0;
 
+        /// <summary>
+        /// Az arucikk alap ara, akcio nelkul
+        /// </summary>
         public int Ar
         {
             get { return ar; }
@@ -43,6 +48,9 @@ namespace PcBolt.Beans.Aruk
         }
         string leiras = "";
 
+        /// <summary>
+        /// A termek leirasa, ami tartalmaz minden fontosabb adatot
+        /// </summary>
         public string Leiras
         {
             get { return leiras; }
@@ -50,13 +58,20 @@ namespace PcBolt.Beans.Aruk
         }
         double akcioSzazalek = 100;
 
+        /// <summary>
+        /// Mennyi szazalek akcio van a termeken
+        /// </summary>
         public double AkcioSzazalek
         {
             get { return akcioSzazalek; }
             set { akcioSzazalek = value; }
         }
+        
         Boolean akcios = false;
 
+        /// <summary>
+        /// Akcios-e a termek
+        /// </summary>
         public Boolean Akcios
         {
             get { return akcios; }
@@ -65,6 +80,9 @@ namespace PcBolt.Beans.Aruk
 
         long gyartoId = 0;
 
+        /// <summary>
+        /// A gyarto ID-je
+        /// </summary>
         public long GyartoId
         {
             get { return gyartoId; }
@@ -72,6 +90,9 @@ namespace PcBolt.Beans.Aruk
         }
         string gyarto = "";
 
+        /// <summary>
+        /// Ki gyartotta az arucikket
+        /// </summary>
         public string Gyarto
         {
             get { return gyarto; }
@@ -80,6 +101,9 @@ namespace PcBolt.Beans.Aruk
 
         int raktaronDarab = -1;
 
+        /// <summary>
+        /// Raktaron levo arucikkek szama
+        /// </summary>
         public int RaktaronDarab
         {
             get { return raktaronDarab; }
@@ -89,6 +113,9 @@ namespace PcBolt.Beans.Aruk
 
         double atlag = -1;
 
+        /// <summary>
+        /// Ertekelesek atlag pontszama
+        /// </summary>
         public double Atlag
         {
             get { return atlag; }
@@ -97,12 +124,16 @@ namespace PcBolt.Beans.Aruk
 
         int ertekelesekSzama = -1;
 
+        /// <summary>
+        /// Hanyan ertekeltek az arucikket
+        /// </summary>
         public int ErtekelesekSzama
         {
             get { return ertekelesekSzama; }
             set { ertekelesekSzama = value; }
         }
 
+        #endregion
 
     }
 }
