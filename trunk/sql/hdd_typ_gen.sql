@@ -1,5 +1,5 @@
-drop table csatolok_tab;
-create  table csatolok_tab (
+drop table hdd_csatolok_tab;
+create  table hdd_csatolok_tab (
 	id		number primary key,
 	nev		char(20)
 );

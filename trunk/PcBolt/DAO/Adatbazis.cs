@@ -14,6 +14,7 @@ namespace PcBolt.DAO
         static string oradb = "Data Source=XE;User Id=peti; Password=peti;"; 
         static string felhasznalo_tab = "felhasznalo_tab";    
         static string cpu_foglalat_tab = "cpu_foglalat_tab";
+        static string gyarto_tab = "gyarto_tab";
             /*"Data Source=(DESCRIPTION="
              + "(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=8080)))"
              + "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));"
@@ -145,19 +146,12 @@ namespace PcBolt.DAO
 
         }
 
-        // CPU KEZELES
-
-        /// <summary>
-        /// Uj processor foglalatot ad hozza az adatbazishoz
-        /// </summary>
-        /// <param name="nev">Foglalat neve</param>
-        public static void AddProcesszorFoglala(string nev)
+        private static void AddKiegeszitoTablaba(string nev, string tabla)
         {
             try
             {
                 connection.Open();
-                sqlKod = "insert into " + cpu_foglalat_tab +
-                    " (nev) values (:nev)";
+                sqlKod = "insert into " + tabla + "(nev) values(:nev)";
                 command = new OracleCommand(sqlKod, connection);
                 command.Parameters.Add(new OracleParameter(":nev", nev));
                 command.ExecuteNonQuery();
@@ -168,12 +162,12 @@ namespace PcBolt.DAO
             }
         }
 
-        public static Hashtable GetProcesszorFoglalatok()
+        private static Hashtable GetKiegeszitoTabla(string tabla)
         {
             try
             {
                 connection.Open();
-                sqlKod = "select * from " + cpu_foglalat_tab;
+                sqlKod = "select * from " + tabla;
                 command = new OracleCommand(sqlKod, connection);
                 OracleDataReader odr = command.ExecuteReader();
                 Hashtable ki = new Hashtable();
@@ -181,9 +175,8 @@ namespace PcBolt.DAO
                 {
                     long id = Convert.ToInt64(odr["id"]);
                     string nev = Convert.ToString(odr["nev"]).Trim();
-                    ki.Add(id,nev);
+                    ki.Add(id, nev);
                 }
-
                 return ki;
             }
             finally
@@ -191,7 +184,45 @@ namespace PcBolt.DAO
                 connection.Close();
             }
         }
+        
+        #region Gyarto
 
+        public static Hashtable GetGyartok()
+        {
+            return GetKiegeszitoTabla(gyarto_tab);
+        }        
+        
+        /// <summary>
+        /// Gyarto felvetele az adatbazisba
+        /// </summary>
+        /// <param name="nev"></param>
+        public static void AddGyarto(string nev)
+        {
+            AddKiegeszitoTablaba(nev, gyarto_tab);
+
+        }
+
+        #endregion
+
+
+
+        #region CPU
+
+        /// <summary>
+        /// Uj processor foglalatot ad hozza az adatbazishoz
+        /// </summary>
+        /// <param name="nev">Foglalat neve</param>
+        public static void AddProcesszorFoglala(string nev)
+        {
+            AddKiegeszitoTablaba(nev, cpu_foglalat_tab);
+        }
+
+        public static Hashtable GetProcesszorFoglalatok()
+        {
+            return GetKiegeszitoTabla(cpu_foglalat_tab);   
+        }
+
+        #endregion
 
     }
 }
