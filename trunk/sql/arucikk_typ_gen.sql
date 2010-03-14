@@ -33,6 +33,18 @@ create or replace type arucikk_typ as object (
 	akcio			number,
 	atlag			number,
 	ertekeles_szam	number,
-	leiras			varchar2(500))
+	leiras			varchar2(500),
+	CONSTRUCTOR FUNCTION arucikk_typ(neve varchar2) return self as result
+	)
 	not final;
 /
+CREATE TYPE BODY arucikk_typ as
+	CONSTRUCTOR FUNCTION arucikk_typ(neve varchar2) return self as result is
+	BEGIN 
+		self.nev :=neve;
+		return;
+	END;
+	
+END;	
+/	
+
