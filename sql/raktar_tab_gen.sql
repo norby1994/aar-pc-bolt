@@ -13,14 +13,16 @@ create table raktar_tab of arucikk_typ
 
 create trigger raktar_tri
 	before insert on raktar_tab
-	referencing new as sor
 	for each row
 	begin
-		select raktar_seq.nextval into :sor.id from dual;
-		--if (:sor is of type (cpu_typ)) then
-		--	:sor.leiras := 'cpu vagy barmi';
-		--end if;
+		select raktar_seq.nextval into :new.id from dual;
+		
+		
+		
 			
 		
 	end raktar_tri;
 /
+
+insert into raktar_tab
+values(cpu_typ('sada'));

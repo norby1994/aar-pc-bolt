@@ -18,14 +18,25 @@ create trigger cpu_foglalat_trigger
 	begin
 		select cpu_foglalat_seq.nextval into :new.id from dual;
 	end;
+	
 /
 
 create or replace type cpu_typ under arucikk_typ (
 	sebesseg		number,
 	foglalat		number,
 	magok_szama		number,
-	dobozos			number(1)	
+	dobozos			number(1),
+	CONSTRUCTOR FUNCTION cpu_typ(neve varchar2) return self as result
 	)
 		
 ;
+/
+
+create or replace type body cpu_typ as
+	constructor function cpu_typ(neve varchar2) return self as result is
+	begin
+		
+		return;
+	end;
+end;
 /

@@ -19,8 +19,13 @@ drop table szamlak_tab;
 drop table hozzaszolas_tab;
 drop table gyarto_tab;
 drop table foglalatok_tab;
+drop table cpu_foglalatok_tab;
 drop table memoria_tip_tab;
 drop table csatolok_tab;
+drop table video_foglalat_tab;
+drop table cpu_foglalat_tab;
+drop table felhasznalo_tab;
+drop table gyarto_tab;
 
 drop type cpu_typ;
 drop type alaplap_typ;
