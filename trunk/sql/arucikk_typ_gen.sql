@@ -38,7 +38,7 @@ create or replace type arucikk_typ as object (
 	)
 	not final;
 /
-CREATE TYPE BODY arucikk_typ as
+CREATE or replace TYPE BODY arucikk_typ as
 	CONSTRUCTOR FUNCTION arucikk_typ(neve varchar2) return self as result is
 	BEGIN 
 		self.nev :=neve;

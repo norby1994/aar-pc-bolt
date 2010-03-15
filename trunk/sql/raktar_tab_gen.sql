@@ -15,14 +15,7 @@ create trigger raktar_tri
 	before insert on raktar_tab
 	for each row
 	begin
-		select raktar_seq.nextval into :new.id from dual;
-		
-		
-		
-			
+		select raktar_seq.nextval into :new.id from dual;			
 		
 	end raktar_tri;
 /
-
-insert into raktar_tab
-values(cpu_typ('sada'));
