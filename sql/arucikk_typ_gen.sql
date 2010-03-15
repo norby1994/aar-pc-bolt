@@ -26,8 +26,8 @@ create trigger gyarto_tri
 
 create or replace type arucikk_typ as object (
 	id 				number,
-	gyarto			number,
 	nev				varchar2(30),
+	gyarto			number,
 	ar				number,
 	darabszam		number,
 	akcio			number,

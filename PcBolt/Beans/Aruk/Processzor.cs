@@ -21,9 +21,9 @@ namespace PcBolt.Beans.Aruk
             set { sebesseg = value; }
         }
 
-        int foglalatID = -1;
+        long foglalatID = -1;
 
-        public int FoglalatID
+        public long FoglalatID
         {
             get { return foglalatID; }
             set { foglalatID = value; }
