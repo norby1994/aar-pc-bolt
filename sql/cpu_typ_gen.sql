@@ -64,7 +64,7 @@ create or replace type body cpu_typ as
 		self.atlag := 0;
 		self.ertekeles_szam := 0;
 		self.akcio := 0;
-		self.akcio := 'leiras';
+		self.leiras := 'leiras';
 		return;
 	end;
 end;
