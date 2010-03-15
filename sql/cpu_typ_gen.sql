@@ -26,16 +26,45 @@ create or replace type cpu_typ under arucikk_typ (
 	foglalat		number,
 	magok_szama		number,
 	dobozos			number(1),
-	CONSTRUCTOR FUNCTION cpu_typ(neve varchar2) return self as result
-	)
-		
+	CONSTRUCTOR FUNCTION cpu_typ(
+	nev varchar2,
+	gyarto number,
+	ar number,
+	darab number,
+	sebesseg number,
+	foglalat number,
+	magok number,
+	dobozos number
+	) return self as result)
+			
 ;
 /
 
 create or replace type body cpu_typ as
-	constructor function cpu_typ(neve varchar2) return self as result is
+	CONSTRUCTOR FUNCTION cpu_typ(
+	nev varchar2,
+	gyarto number,
+	ar number,
+	darab number,
+	sebesseg number,
+	foglalat number,
+	magok number,
+	dobozos number
+	) return self as result is
 	begin
-		
+		self.nev := nev;
+		self.gyarto := gyarto;
+		self.ar := ar;
+		self.darabszam := darab;
+		self.sebesseg := sebesseg;
+		self.foglalat := foglalat;
+		self.magok_szama := magok;
+		self.dobozos := dobozos;
+
+		self.atlag := 0;
+		self.ertekeles_szam := 0;
+		self.akcio := 0;
+		self.akcio := 'leiras';
 		return;
 	end;
 end;
