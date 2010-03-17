@@ -7,10 +7,11 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
+using PcBolt.DAO;
 
 namespace PcBolt.Beans.Aruk
 {
-    public class Videokartya
+    public class Videokartya : AruCikk
     {
         long foglalatId = -1;
 
@@ -20,12 +21,10 @@ namespace PcBolt.Beans.Aruk
             set { foglalatId = value; }
         }
 
-        string foglalat = "";
 
         public string Foglalat
         {
-            get { return foglalat; }
-            set { foglalat = value; }
+            get { return Adatbazis.Video_foglalaok[foglalatId].ToString() ; }
         }
 
         int memoriaMeret = -1;

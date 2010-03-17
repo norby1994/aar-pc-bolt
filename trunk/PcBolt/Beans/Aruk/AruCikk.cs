@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
+using PcBolt.DAO;
 
 namespace PcBolt.Beans.Aruk
 {
@@ -88,15 +81,13 @@ namespace PcBolt.Beans.Aruk
             get { return gyartoId; }
             set { gyartoId = value; }
         }
-        string gyarto = "";
 
         /// <summary>
         /// Ki gyartotta az arucikket
         /// </summary>
         public string Gyarto
         {
-            get { return gyarto; }
-            set { gyarto = value; }
+            get { return Adatbazis.Gyartok[gyartoId].ToString(); }
         }
 
         int raktaronDarab = -1;
