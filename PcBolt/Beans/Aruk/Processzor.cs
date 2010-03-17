@@ -1,12 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
+﻿using PcBolt.DAO;
 
 namespace PcBolt.Beans.Aruk
 {
@@ -29,12 +21,10 @@ namespace PcBolt.Beans.Aruk
             set { foglalatID = value; }
         }
 
-        string foglalat = "";
 
         public string Foglalat
         {
-            get { return foglalat; }
-            set { foglalat = value; }
+            get { return Adatbazis.Cpu_foglalatok[foglalatID].ToString(); }
         }
 
         int magokSzama = -1;

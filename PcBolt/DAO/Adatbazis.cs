@@ -13,77 +13,73 @@ namespace PcBolt.DAO
 {
     public static class Adatbazis
     {
+        #region Kapcsolatok
         static string oradb = "Data Source=XE;User Id=peti; Password=peti;";
         static string felhasznalo_tab = "felhasznalo_tab";
         static string cpu_foglalat_tab = "cpu_foglalat_tab";
+        static string video_foglalat_tab = "video_foglalat_tab";
+        static string memoria_tipus_tab = "memoria_tip_tab";
         static string gyarto_tab = "gyarto_tab";
         static string raktar_tab = "raktar_tab";
-
-        static private Hashtable gyartok = new Hashtable();
-        static private Hashtable cpu_foglalatok = new Hashtable();
-
-
         static OracleConnection connection = new OracleConnection(oradb);
         static string sqlKod;
         static OracleCommand command = new OracleCommand("", connection);
+        #endregion
 
+        #region Kiegeszito hashmapek
+        static private Hashtable gyartok = new Hashtable();
+
+        public static Hashtable Gyartok
+        {
+            get { return Adatbazis.gyartok; }
+            set { Adatbazis.gyartok = value; }
+        }
+
+        static private Hashtable cpu_foglalatok = new Hashtable();
+
+        public static Hashtable Cpu_foglalatok
+        {
+            get { return Adatbazis.cpu_foglalatok; }
+            set { Adatbazis.cpu_foglalatok = value; }
+        }
+
+        static private Hashtable video_foglalaok = new Hashtable();
+
+        public static Hashtable Video_foglalaok
+        {
+            get { return Adatbazis.video_foglalaok; }
+            set { Adatbazis.video_foglalaok = value; }
+        }
+
+        static private Hashtable memoria_tipusok = new Hashtable();
+
+        public static Hashtable Memoria_tipusok
+        {
+            get { return Adatbazis.memoria_tipusok; }
+            set { Adatbazis.memoria_tipusok = value; }
+        }
+
+        #endregion
+
+        
         public static void Init()
         {
             kiegeszitoFrissites();
 
         }
 
-        public static string GetFelhasznaloNev()
+
+        public static void AddTermek(AruCikk aru)
         {
-            try
-            {
-                connection.Open();
-                sqlKod = "select * from felhasznalo_tab;";
-                command = new OracleCommand(sqlKod, connection);
-                OracleDataReader dr = command.ExecuteReader();
-                dr.Read();
-                OracleString os = dr.GetOracleString(1);
-
-                return "semmi";
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        // FELHASZNALOKEZELES
-
-        /// <summary>
-        /// Letezik-e az adott felhasznalonev
-        /// </summary>
-        /// <param name="felhasznev"></param>
-        /// <returns></returns>
-        public static bool FelhasznaloLetezik(string felhasznev)
-        {
-            try
-            {
-                connection.Open();
-                sqlKod = "select felhasznev from " + felhasznalo_tab +
-                    " where felhasznev like :felhasznev";
-                command = new OracleCommand(sqlKod, connection);
-                command.Parameters.Add(new OracleParameter(":felhasznev", felhasznev));
-                OracleDataReader odr = command.ExecuteReader();
-                return odr.HasRows;
-
-            }
-            finally
-            {
-                connection.Close();
-            }
+            if (aru is Processzor)
+                AddProcesszor((Processzor)aru);
+            if (aru is Videokartya)
+                AddVideoKartya((Videokartya)aru);
+            if (aru is Memoria)
+                AddMemoriaTipus((Memoria)aru);
 
         }
-
-        private static void kiegeszitoFrissites()
-        {
-            gyartok = GetGyartok();
-            cpu_foglalatok = GetProcesszorFoglalatok();
-        }
+       
 
 
         #region Felhasznalo
@@ -155,13 +151,65 @@ namespace PcBolt.DAO
                 connection.Close();
             }
 
-            return null;
 
         }
+
+
+        public static string GetFelhasznaloNev()
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select * from felhasznalo_tab;";
+                command = new OracleCommand(sqlKod, connection);
+                OracleDataReader dr = command.ExecuteReader();
+                dr.Read();
+                OracleString os = dr.GetOracleString(1);
+
+                return "semmi";
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Letezik-e az adott felhasznalonev
+        /// </summary>
+        /// <param name="felhasznev"></param>
+        /// <returns></returns>
+        public static bool FelhasznaloLetezik(string felhasznev)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select felhasznev from " + felhasznalo_tab +
+                    " where felhasznev like :felhasznev";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":felhasznev", felhasznev));
+                OracleDataReader odr = command.ExecuteReader();
+                return odr.HasRows;
+
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+        }
+
 
         #endregion
 
         #region Kegeszito tablak
+
+        private static void kiegeszitoFrissites()
+        {
+            gyartok = GetGyartok();
+            cpu_foglalatok = GetProcesszorFoglalatok();
+            video_foglalaok = GetVideokartyaFoglalatok();
+        }
 
         private static void AddKiegeszitoTablaba(string nev, string tabla)
         {
@@ -178,8 +226,6 @@ namespace PcBolt.DAO
                 connection.Close();
             }
         }
-
-
 
         private static Hashtable GetKiegeszitoTabla(string tabla)
         {
@@ -225,6 +271,8 @@ namespace PcBolt.DAO
 
         #endregion
 
+
+
         #region CPU
 
         /// <summary>
@@ -245,7 +293,7 @@ namespace PcBolt.DAO
             return GetKiegeszitoTabla(cpu_foglalat_tab);
         }
 
-        public static void AddProcesszor(Processzor proci)
+        private static void AddProcesszor(Processzor proci)
         {
             try
             {
@@ -298,27 +346,28 @@ namespace PcBolt.DAO
                 command = new OracleCommand(sqlKod, connection);
                 OracleDataReader odr = command.ExecuteReader();
                 List<Processzor> ki = new List<Processzor>();
+
                 while (odr.Read())
                 {
-                    Processzor cpu = new Processzor();
-                    cpu.Id = Convert.ToInt64(odr[0]);
-                    cpu.Nev = Convert.ToString(odr[1]);
-                    cpu.GyartoId = Convert.ToInt64(odr[2]);
-                    cpu.Gyarto = Convert.ToString(gyartok[cpu.GyartoId]);
-                    cpu.Ar = Convert.ToInt32(odr[3]);
-                    cpu.RaktaronDarab = Convert.ToInt32(odr[4]);
-                    cpu.AkcioSzazalek = Convert.ToDouble(odr[5]);
-                    cpu.Atlag = Convert.ToDouble(odr[6]);
-                    cpu.ErtekelesekSzama = Convert.ToInt32(odr[7]);
-                    cpu.Leiras = Convert.ToString(odr[8]);
-                    cpu.Sebesseg = Convert.ToInt32(odr[9]);
-                    cpu.FoglalatID = Convert.ToInt64(odr[10]);
-                    cpu.Foglalat = Convert.ToString(cpu_foglalatok[cpu.FoglalatID]);
-                    cpu.MagokSzama = Convert.ToInt32(odr[11]);
-                    cpu.Dobozos = Convert.ToBoolean(odr[12]);
+                    if (!odr.IsDBNull(0))
+                    {
+                        Processzor cpu = new Processzor();
+                        cpu.Id = Convert.ToInt64(odr[0]);
+                        cpu.Nev = Convert.ToString(odr[1]);
+                        cpu.GyartoId = Convert.ToInt64(odr[2]);
+                        cpu.Ar = Convert.ToInt32(odr[3]);
+                        cpu.RaktaronDarab = Convert.ToInt32(odr[4]);
+                        cpu.AkcioSzazalek = Convert.ToDouble(odr[5]);
+                        cpu.Atlag = Convert.ToDouble(odr[6]);
+                        cpu.ErtekelesekSzama = Convert.ToInt32(odr[7]);
+                        cpu.Leiras = Convert.ToString(odr[8]);
+                        cpu.Sebesseg = Convert.ToInt32(odr[9]);
+                        cpu.FoglalatID = Convert.ToInt64(odr[10]);
+                        cpu.MagokSzama = Convert.ToInt32(odr[11]);
+                        cpu.Dobozos = Convert.ToBoolean(odr[12]);
 
-                    ki.Add(cpu);
-
+                        ki.Add(cpu);
+                    }
                 }
 
                 return ki;
@@ -360,23 +409,26 @@ namespace PcBolt.DAO
                 command = new OracleCommand(sqlKod, connection);
                 command.Parameters.Add(new OracleParameter(":id", id));
                 OracleDataReader odr = command.ExecuteReader();
-                odr.Read();
                 Processzor cpu = new Processzor();
-                cpu.Id = Convert.ToInt64(odr[0]);
-                cpu.Nev = Convert.ToString(odr[1]);
-                cpu.GyartoId = Convert.ToInt64(odr[2]);
-                cpu.Gyarto = Convert.ToString(gyartok[cpu.GyartoId]);
-                cpu.Ar = Convert.ToInt32(odr[3]);
-                cpu.RaktaronDarab = Convert.ToInt32(odr[4]);
-                cpu.AkcioSzazalek = Convert.ToDouble(odr[5]);
-                cpu.Atlag = Convert.ToDouble(odr[6]);
-                cpu.ErtekelesekSzama = Convert.ToInt32(odr[7]);
-                cpu.Leiras = Convert.ToString(odr[8]);
-                cpu.Sebesseg = Convert.ToInt32(odr[9]);
-                cpu.FoglalatID = Convert.ToInt64(odr[10]);
-                cpu.Foglalat = Convert.ToString(cpu_foglalatok[cpu.FoglalatID]);
-                cpu.MagokSzama = Convert.ToInt32(odr[11]);
-                cpu.Dobozos = Convert.ToBoolean(odr[12]);
+                odr.Read();
+
+                if (!(odr[0] is DBNull))
+                {
+                    cpu.Id = Convert.ToInt64(odr[0]);
+                    cpu.Nev = Convert.ToString(odr[1]);
+                    cpu.GyartoId = Convert.ToInt64(odr[2]);
+                    cpu.Ar = Convert.ToInt32(odr[3]);
+                    cpu.RaktaronDarab = Convert.ToInt32(odr[4]);
+                    cpu.AkcioSzazalek = Convert.ToDouble(odr[5]);
+                    cpu.Atlag = Convert.ToDouble(odr[6]);
+                    cpu.ErtekelesekSzama = Convert.ToInt32(odr[7]);
+                    cpu.Leiras = Convert.ToString(odr[8]);
+                    cpu.Sebesseg = Convert.ToInt32(odr[9]);
+                    cpu.FoglalatID = Convert.ToInt64(odr[10]);
+                    cpu.MagokSzama = Convert.ToInt32(odr[11]);
+                    cpu.Dobozos = Convert.ToBoolean(odr[12]);
+
+                }
                 return cpu;
             }
             finally
@@ -387,5 +439,215 @@ namespace PcBolt.DAO
 
         #endregion
 
+        #region Videokartya
+
+        public static void AddVideokartyaFoglalat(string nev)
+        {
+            AddKiegeszitoTablaba(nev, video_foglalat_tab);
+        }
+
+        private static Hashtable GetVideokartyaFoglalatok()
+        {
+            return GetKiegeszitoTabla(video_foglalat_tab);
+        }
+
+        /// <summary>
+        /// Videokartya hozza adasa az adatbazishoz
+        /// </summary>
+        /// <param name="video"></param>
+        private static void AddVideoKartya(Videokartya video)
+        {
+            try
+            {
+                connection.Open();
+
+                sqlKod = "insert into raktar_tab values(video_typ( " +
+                    ":nev, :gyarto, :ar, :darabszam, :foglalat, :memoria))";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":nev", video.Nev));
+                command.Parameters.Add(new OracleParameter(":gyarto", video.GyartoId));
+                command.Parameters.Add(new OracleParameter(":ar", video.Ar));
+                command.Parameters.Add(new OracleParameter(":darabszam", video.RaktaronDarab));
+                command.Parameters.Add(new OracleParameter(":foglalat", video.FoglalatId));
+                command.Parameters.Add(new OracleParameter(":memoria", video.MemoriaMeret));
+
+                command.ExecuteNonQuery();
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Osszes videokartya lekerese
+        /// </summary>
+        /// <returns></returns>
+        public static List<Videokartya> GetVideokartyak()
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select " +
+                " treat(value(p) as video_typ).id, " +         //0
+                " treat(value(p) as video_typ).nev, " +                       //1
+                " treat(value(p) as video_typ).gyarto, " +                    //2
+                " treat(value(p) as video_typ).ar, " +                        //3
+                " treat(value(p) as video_typ).darabszam, " +                 //4
+                " treat(value(p) as video_typ).akcio, " +                     //5
+                " treat(value(p) as video_typ).atlag, " +                     //6
+                " treat(value(p) as video_typ).ertekeles_szam, " +            //7
+                " treat(value(p) as video_typ).leiras, " +                    //8
+                " treat(value(p) as video_typ).foglalat, " +                  //9
+                " treat(value(p) as video_typ).memoria " +                   //10
+
+                " from " + raktar_tab + " p ";
+
+                command = new OracleCommand(sqlKod, connection);
+
+                OracleDataReader odr = command.ExecuteReader();
+                List<Videokartya> ki = new List<Videokartya>();
+                while (odr.Read())
+                {
+                    Videokartya vk = new Videokartya();
+                    if (!odr.IsDBNull(0))
+                    {
+                        object o = odr[0];
+                        vk.Id = Convert.ToInt64(odr[0]);
+                        vk.Nev = odr.GetString(1);
+                        vk.GyartoId = Convert.ToInt64(odr[2]);
+                        vk.Ar = Convert.ToInt32(odr[3]);
+                        vk.RaktaronDarab = Convert.ToInt32(odr[4]);
+                        vk.AkcioSzazalek = Convert.ToDouble(odr[5]);
+                        vk.Atlag = Convert.ToDouble(odr[6]);
+                        vk.ErtekelesekSzama = Convert.ToInt32(odr[7]);
+                        vk.Leiras = odr.GetString(8);
+                        vk.FoglalatId = Convert.ToInt64(odr[9]);
+                        vk.MemoriaMeret = Convert.ToInt32(odr[10]);
+                        ki.Add(vk);
+                    }
+                }
+
+                return ki;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+        /// <summary>
+        /// ID alapja visszaadja a videokartyat
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static Videokartya GetVideokartya(long id)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select " +
+                " treat(value(p) as video_typ).id, " +                        //0
+                " treat(value(p) as video_typ).nev, " +                       //1
+                " treat(value(p) as video_typ).gyarto, " +                    //2
+                " treat(value(p) as video_typ).ar, " +                        //3
+                " treat(value(p) as video_typ).darabszam, " +                 //4
+                " treat(value(p) as video_typ).akcio, " +                     //5
+                " treat(value(p) as video_typ).atlag, " +                     //6
+                " treat(value(p) as video_typ).ertekeles_szam, " +            //7
+                " treat(value(p) as video_typ).leiras, " +                    //8
+                " treat(value(p) as video_typ).foglalat, " +                  //9
+                " treat(value(p) as video_typ).memoria " +                    //10
+
+                " from " + raktar_tab + " p " +
+                " where id = :id";
+
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":id", id));
+
+                OracleDataReader odr = command.ExecuteReader();
+                List<Videokartya> ki = new List<Videokartya>();
+                odr.Read();
+
+                Videokartya vk = new Videokartya();
+                if (!odr.IsDBNull(0))
+                {
+                    object o = odr[0];
+                    vk.Id = Convert.ToInt64(odr[0]);
+                    vk.Nev = odr.GetString(1);
+                    vk.GyartoId = Convert.ToInt64(odr[2]);
+                    vk.Ar = Convert.ToInt32(odr[3]);
+                    vk.RaktaronDarab = Convert.ToInt32(odr[4]);
+                    vk.AkcioSzazalek = Convert.ToDouble(odr[5]);
+                    vk.Atlag = Convert.ToDouble(odr[6]);
+                    vk.ErtekelesekSzama = Convert.ToInt32(odr[7]);
+                    vk.Leiras = odr.GetString(8);
+                    vk.FoglalatId = Convert.ToInt64(odr[9]);
+                    vk.MemoriaMeret = Convert.ToInt32(odr[10]);
+                }
+                return vk;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+        #endregion
+
+        #region Memoria
+
+        public static void AddMemoriaTipus(string nev)
+        {
+            AddKiegeszitoTablaba(nev, memoria_tipus_tab);
+        }
+
+        public static Hashtable GetMemoriaTipusok()
+        {
+            GetKiegeszitoTabla(memoria_tipus_tab);
+        }
+
+        private void AddMemoria(Memoria memo)
+        {
+            
+        }
+
+        public List<Memoria> GetMemoriak()
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select treat(value(p) as memoria_typ).id, " +         //0
+                " treat(value(p) as memoria_typ).nev, " +                       //1
+                " treat(value(p) as memoria_typ).gyarto, " +                    //2
+                " treat(value(p) as memoria_typ).ar, " +                        //3
+                " treat(value(p) as memoria_typ).darabszam, " +                 //4
+                " treat(value(p) as memoria_typ).akcio, " +                     //5
+                " treat(value(p) as memoria_typ).atlag, " +                     //6
+                " treat(value(p) as memoria_typ).ertekeles_szam, " +            //7
+                " treat(value(p) as memoria_typ).leiras, " +                    //8
+                " treat(value(p) as memoria_typ).tipus, " +                     //9
+                " treat(value(p) as memoria_typ).meret, " +                     //10
+                " treat(value(p) as memoria_typ).sebesseg, " +                  //11
+                " from " + raktar_tab + " p ";
+
+                command = new OracleCommand(sqlKod, connection);
+                OracleDataReader odr = command.ExecuteReader();
+
+                while (odr.Read())
+                {
+                    if (!odr.IsDBNull())
+                    {
+
+
+                    }
+
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        #endregion
     }
 }
