@@ -23,6 +23,42 @@ create trigger video_foglalat_tri
 
 create or replace type video_typ under arucikk_typ (
 	foglalat	number,
-	memoria		number
+	memoria		number,
+	constructor function video_typ(
+		nev		varchar2,
+		gyarto	number,
+		ar		number,
+		darabszam	number,
+		foglalat	number,
+		memoria		number		
+	) return self as result
 );
+/
+
+create or replace type body video_typ as
+	constructor function video_typ(
+		nev		varchar2,
+		gyarto	number,
+		ar		number,
+		darabszam	number,
+		foglalat	number,
+		memoria		number		
+	) return self as result is
+	BEGIN
+		self.nev := nev;
+		self.gyarto := gyarto;
+		self.ar := ar;
+		self.darabszam := darabszam;
+		self.foglalat := foglalat;
+		self.memoria := memoria;
+		
+		self.akcio := 0;
+		self.atlag := 0;
+		self.ertekeles_szam := 0;
+		self.leiras := 'Meg nincs';
+		return;
+	END;
+		
+
+end;
 /
