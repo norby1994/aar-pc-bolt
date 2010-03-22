@@ -1,12 +1,13 @@
 ﻿using PcBolt.Beans.Aruk;
+using PcBolt.DAO;
 
 
 public class Memoria : AruCikk
 {
     #region Adattagok deklaralasa
-    int tipusId = -1;
+    long tipusId = -1;
 
-    public int TipusId
+    public long TipusId
     {
         get { return tipusId; }
         set { tipusId = value; }
@@ -15,7 +16,7 @@ public class Memoria : AruCikk
 
     public string Tipus
     {
-        get { return tipus; }
+        get { return Adatbazis.Memoria_tipusok[tipusId].ToString(); }
         
     }
 
@@ -27,6 +28,15 @@ public class Memoria : AruCikk
         set { sebesseg = value; }
     }
 
+    int meret = 0;
+
+    public int Meret
+    {
+        get { return meret; }
+        set { meret = value; }
+    }
+
+    
 
     #endregion
 }

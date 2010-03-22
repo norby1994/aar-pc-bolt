@@ -47,7 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Beans\Admin.cs" />
+    <Compile Include="Beans\Aruk\Alaplap.cs" />
     <Compile Include="Beans\Aruk\AruCikk.cs" />
+    <Compile Include="Beans\Aruk\Hdd.cs" />
     <Compile Include="Beans\Aruk\Memoria.cs" />
     <Compile Include="Beans\Aruk\Processzor.cs" />
     <Compile Include="Beans\Aruk\Videokartya.cs" />
@@ -82,7 +84,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>1402</DevelopmentServerPort>
+          <DevelopmentServerPort>3113</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

@@ -18,6 +18,7 @@ namespace PcBolt.DAO
         static string felhasznalo_tab = "felhasznalo_tab";
         static string cpu_foglalat_tab = "cpu_foglalat_tab";
         static string video_foglalat_tab = "video_foglalat_tab";
+        static string hdd_csatolo_tav = "hdd_csatolok_tab";
         static string memoria_tipus_tab = "memoria_tip_tab";
         static string gyarto_tab = "gyarto_tab";
         static string raktar_tab = "raktar_tab";
@@ -59,9 +60,18 @@ namespace PcBolt.DAO
             set { Adatbazis.memoria_tipusok = value; }
         }
 
+        static private Hashtable hdd_csatolok = new Hashtable();
+
+        public static Hashtable Hdd_csatolok
+        {
+            get { return Adatbazis.hdd_csatolok; }
+            set { Adatbazis.hdd_csatolok = value; }
+        }
+
+
         #endregion
 
-        
+
         public static void Init()
         {
             kiegeszitoFrissites();
@@ -76,10 +86,13 @@ namespace PcBolt.DAO
             if (aru is Videokartya)
                 AddVideoKartya((Videokartya)aru);
             if (aru is Memoria)
-                AddMemoriaTipus((Memoria)aru);
-
+                AddMemoria((Memoria)aru);
+            if (aru is Hdd)
+                AddHdd((Hdd)aru);
+            if (aru is Alaplap)
+                AddAlaplap((Alaplap)aru);
         }
-       
+
 
 
         #region Felhasznalo
@@ -270,8 +283,6 @@ namespace PcBolt.DAO
         }
 
         #endregion
-
-
 
         #region CPU
 
@@ -535,6 +546,7 @@ namespace PcBolt.DAO
                 connection.Close();
             }
         }
+
         /// <summary>
         /// ID alapja visszaadja a videokartyat
         /// </summary>
@@ -602,15 +614,35 @@ namespace PcBolt.DAO
 
         public static Hashtable GetMemoriaTipusok()
         {
-            GetKiegeszitoTabla(memoria_tipus_tab);
+            return GetKiegeszitoTabla(memoria_tipus_tab);
         }
 
-        private void AddMemoria(Memoria memo)
+        private static void AddMemoria(Memoria memo)
         {
-            
+            try
+            {
+                connection.Open();
+                sqlKod = "insert into raktar_tab values(memoria_typ( " +
+                    ":nev, :gyarto, :ar, :darabszam, :tipus, :meret, :sebesseg))";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":nev", memo.Nev));
+                command.Parameters.Add(new OracleParameter(":gyarto", memo.GyartoId));
+                command.Parameters.Add(new OracleParameter(":ar", memo.Ar));
+                command.Parameters.Add(new OracleParameter(":darabszam", memo.RaktaronDarab));
+                command.Parameters.Add(new OracleParameter(":tipus", memo.TipusId));
+                command.Parameters.Add(new OracleParameter(":meret", memo.Meret));
+                command.Parameters.Add(new OracleParameter(":sebesseg", memo.Sebesseg));
+
+                command.ExecuteNonQuery();
+            }
+            finally
+            {
+                connection.Close();
+            }
+
         }
 
-        public List<Memoria> GetMemoriak()
+        public static List<Memoria> GetMemoriak()
         {
             try
             {
@@ -631,16 +663,30 @@ namespace PcBolt.DAO
 
                 command = new OracleCommand(sqlKod, connection);
                 OracleDataReader odr = command.ExecuteReader();
-
+                List<Memoria> ki = new List<Memoria>();
                 while (odr.Read())
                 {
-                    if (!odr.IsDBNull())
+                    if (!odr.IsDBNull(0))
                     {
+                        Memoria memo = new Memoria();
+                        memo.Id = Convert.ToInt64(odr[0]);
+                        memo.Nev = Convert.ToString(odr[1]);
+                        memo.GyartoId = Convert.ToInt64(odr[2]);
+                        memo.Ar = Convert.ToInt32(odr[3]);
+                        memo.RaktaronDarab = Convert.ToInt32(odr[4]);
+                        memo.AkcioSzazalek = Convert.ToInt32(odr[5]);
+                        memo.Atlag = Convert.ToInt32(odr[6]);
+                        memo.ErtekelesekSzama = Convert.ToInt32(odr[7]);
+                        memo.Leiras = Convert.ToString(odr[8]);
+                        memo.TipusId = Convert.ToInt64(odr[9]);
+                        memo.Meret = Convert.ToInt32(odr[10]);
+                        memo.Sebesseg = Convert.ToInt32(odr[11]);
 
-
+                        ki.Add(memo);
                     }
 
                 }
+                return ki;
             }
             finally
             {
@@ -648,6 +694,338 @@ namespace PcBolt.DAO
             }
         }
 
+        public static Memoria GetMemoria(long id)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select treat(value(p) as memoria_typ).id, " +         //0
+                " treat(value(p) as memoria_typ).nev, " +                       //1
+                " treat(value(p) as memoria_typ).gyarto, " +                    //2
+                " treat(value(p) as memoria_typ).ar, " +                        //3
+                " treat(value(p) as memoria_typ).darabszam, " +                 //4
+                " treat(value(p) as memoria_typ).akcio, " +                     //5
+                " treat(value(p) as memoria_typ).atlag, " +                     //6
+                " treat(value(p) as memoria_typ).ertekeles_szam, " +            //7
+                " treat(value(p) as memoria_typ).leiras, " +                    //8
+                " treat(value(p) as memoria_typ).tipus, " +                     //9
+                " treat(value(p) as memoria_typ).meret, " +                     //10
+                " treat(value(p) as memoria_typ).sebesseg, " +                  //11
+                " from " + raktar_tab + " p " +
+                " where id:=id";
+
+                command = new OracleCommand(sqlKod, connection);
+
+                OracleDataReader odr = command.ExecuteReader();
+                Memoria memo = new Memoria();
+                if (odr.Read() || !odr.IsDBNull(0))
+                {
+                    memo.Id = Convert.ToInt64(odr[0]);
+                    memo.Nev = Convert.ToString(odr[1]);
+                    memo.GyartoId = Convert.ToInt64(odr[2]);
+                    memo.Ar = Convert.ToInt32(odr[3]);
+                    memo.RaktaronDarab = Convert.ToInt32(odr[4]);
+                    memo.AkcioSzazalek = Convert.ToInt32(odr[5]);
+                    memo.Atlag = Convert.ToInt32(odr[6]);
+                    memo.ErtekelesekSzama = Convert.ToInt32(odr[7]);
+                    memo.Leiras = Convert.ToString(odr[8]);
+                    memo.TipusId = Convert.ToInt64(odr[9]);
+                    memo.Meret = Convert.ToInt32(odr[10]);
+                    memo.Sebesseg = Convert.ToInt32(odr[11]);
+                }
+
+                return memo;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        #endregion
+
+        #region HDD
+
+        public static void AddHddCsatolo(string nev)
+        {
+            AddKiegeszitoTablaba(nev, hdd_csatolo_tav);
+        }
+
+        public static Hashtable GetHddCsatolok()
+        {
+            return GetKiegeszitoTabla(hdd_csatolo_tav);
+        }
+
+        public static List<Hdd> GetHddk()
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select treat(value(p) as hdd_typ).id, " +         //0
+                " treat(value(p) as hdd_typ).nev, " +                       //1
+                " treat(value(p) as hdd_typ).gyarto, " +                    //2
+                " treat(value(p) as hdd_typ).ar, " +                        //3
+                " treat(value(p) as hdd_typ).darabszam, " +                 //4
+                " treat(value(p) as hdd_typ).akcio, " +                     //5
+                " treat(value(p) as hdd_typ).atlag, " +                     //6
+                " treat(value(p) as hdd_typ).ertekeles_szam, " +            //7
+                " treat(value(p) as hdd_typ).leiras, " +                    //8
+                " treat(value(p) as hdd_typ).csatolo, " +                   //9
+                " treat(value(p) as hdd_typ).meret " +                      //10
+
+                " from " + raktar_tab + " p ";
+
+                command = new OracleCommand(sqlKod, connection);
+                OracleDataReader odr = command.ExecuteReader();
+
+                List<Hdd> ki = new List<Hdd>();
+                while (odr.Read())
+                {
+                    if (!(odr[0] is DBNull))
+                    {
+                        Hdd hdd = new Hdd();
+                        hdd.Id = Convert.ToInt64(odr[0]);
+                        hdd.Nev = Convert.ToString(odr[1]);
+                        hdd.GyartoId = Convert.ToInt64(odr[2]);
+                        hdd.Ar = Convert.ToInt32(odr[3]);
+                        hdd.RaktaronDarab = Convert.ToInt32(odr[4]);
+                        hdd.AkcioSzazalek = Convert.ToDouble(odr[5]);
+                        hdd.Atlag = Convert.ToDouble(odr[6]);
+                        hdd.ErtekelesekSzama = Convert.ToInt32(odr[7]);
+                        hdd.Leiras = Convert.ToString(odr[8]);
+                        hdd.CsatoloId = Convert.ToInt64(odr[9]);
+                        hdd.Meret = Convert.ToInt32(odr[10]);
+
+                        ki.Add(hdd);
+                    }
+                }
+                return ki;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public static Hdd GetHddk(int id)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select treat(value(p) as hdd_typ).id, " +         //0
+                " treat(value(p) as hdd_typ).nev, " +                       //1
+                " treat(value(p) as hdd_typ).gyarto, " +                    //2
+                " treat(value(p) as hdd_typ).ar, " +                        //3
+                " treat(value(p) as hdd_typ).darabszam, " +                 //4
+                " treat(value(p) as hdd_typ).akcio, " +                     //5
+                " treat(value(p) as hdd_typ).atlag, " +                     //6
+                " treat(value(p) as hdd_typ).ertekeles_szam, " +            //7
+                " treat(value(p) as hdd_typ).leiras, " +                    //8
+                " treat(value(p) as hdd_typ).csatolo, " +                   //9
+                " treat(value(p) as hdd_typ).meret " +                      //10
+
+                " from " + raktar_tab + " p " +
+                " where id = :id";
+
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":id", id));
+                OracleDataReader odr = command.ExecuteReader();
+                odr.Read();
+                Hdd hdd = new Hdd();
+                if (!(odr[0] is DBNull))
+                {
+                    hdd.Id = Convert.ToInt64(odr[0]);
+                    hdd.Nev = Convert.ToString(odr[1]);
+                    hdd.GyartoId = Convert.ToInt64(odr[2]);
+                    hdd.Ar = Convert.ToInt32(odr[3]);
+                    hdd.RaktaronDarab = Convert.ToInt32(odr[4]);
+                    hdd.AkcioSzazalek = Convert.ToDouble(odr[5]);
+                    hdd.Atlag = Convert.ToDouble(odr[6]);
+                    hdd.ErtekelesekSzama = Convert.ToInt32(odr[7]);
+                    hdd.Leiras = Convert.ToString(odr[8]);
+                    hdd.CsatoloId = Convert.ToInt64(odr[9]);
+                    hdd.Meret = Convert.ToInt32(odr[10]);
+                }
+
+                return hdd;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public static void AddHdd(Hdd h)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "INSERT INTO " + raktar_tab +
+                    " values(hdd_typ(:nev, :gyarto, :ar, :darab_szam, :darab_szam" +
+                    " :csatolo, :meret )";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":nev", h.Nev));
+                command.Parameters.Add(new OracleParameter(":gyarto", h.GyartoId));
+                command.Parameters.Add(new OracleParameter(":ar", h.Ar));
+                command.Parameters.Add(new OracleParameter(":darab_szam", h.RaktaronDarab));
+                command.Parameters.Add(new OracleParameter(":csatolo", h.CsatoloId));
+                command.Parameters.Add(new OracleParameter(":meret", h.Meret));
+                command.ExecuteNonQuery();
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        #endregion
+
+        #region Alaplap
+        private static void AddAlaplap(Alaplap alap)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "INSERT INTO " + raktar_tab +
+                    " values(alaplap_typ(:nev, :gyarto, :ar, :darab_szam, " +
+                    " :foglalat, :mem_foglalat, :mem_szama, :video_foglalat, :sata, :ide))";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":nev", alap.Nev));
+                command.Parameters.Add(new OracleParameter(":gyarto", alap.GyartoId));
+                command.Parameters.Add(new OracleParameter(":ar", alap.Ar));
+                command.Parameters.Add(new OracleParameter(":darab_szam", alap.RaktaronDarab));
+                command.Parameters.Add(new OracleParameter(":foglalat", alap.CpuFoglalatId));
+                command.Parameters.Add(new OracleParameter(":mem_foglalat", alap.MemoriaFoglalatId));
+                command.Parameters.Add(new OracleParameter(":mem_szama", alap.MemoriaSzama));
+                command.Parameters.Add(new OracleParameter(":video_foglalat", alap.VideoFoglalatId));
+                command.Parameters.Add(new OracleParameter(":sata", alap.SataSzama));
+                command.Parameters.Add(new OracleParameter(":ide", alap.IdeSzama));
+                string s = command.CommandText;
+                command.ExecuteNonQuery();
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+        }
+
+        public static List<Alaplap> GetAlaplapok()
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select treat(value(p) as alap_typ).id, " +         //0
+                " treat(value(p) as alap_typ).nev, " +                       //1
+                " treat(value(p) as alap_typ).gyarto, " +                    //2
+                " treat(value(p) as alap_typ).ar, " +                        //3
+                " treat(value(p) as alap_typ).darabszam, " +                 //4
+                " treat(value(p) as alap_typ).akcio, " +                     //5
+                " treat(value(p) as alap_typ).atlag, " +                     //6
+                " treat(value(p) as alap_typ).ertekeles_szam, " +            //7
+                " treat(value(p) as alap_typ).leiras, " +                    //8
+                " treat(value(p) as alap_typ).foglalat, " +                  //9
+                " treat(value(p) as alap_typ).mem_foglalat, " +                  //10
+                " treat(value(p) as alap_typ).mem_fog_szam, " +               //11
+                " treat(value(p) as alap_typ).video_foglalat " +                    //12
+                " treat(value(p) as alap_typ).sata " +                    //13
+                " treat(value(p) as alap_typ).ide " +                    //14
+
+                " from " + raktar_tab + " p";
+                command = new OracleCommand(sqlKod, connection);
+                OracleDataReader odr = command.ExecuteReader();
+                List<Processzor> ki = new List<Processzor>();
+
+                while (odr.Read())
+                {
+                    if (!odr.IsDBNull(0))
+                    {
+                        Alaplap alap = new Alaplap();
+                        alap.Id = Convert.ToInt64(odr[0]);
+                        alap.Nev = Convert.ToString(odr[1]);
+                        alap.GyartoId = Convert.ToInt64(odr[2]);
+                        alap.Ar = Convert.ToInt32(odr[3]);
+                        alap.RaktaronDarab = Convert.ToInt32(odr[4]);
+                        alap.AkcioSzazalek = Convert.ToDouble(odr[5]);
+                        alap.Atlag = Convert.ToDouble(odr[6]);
+                        alap.ErtekelesekSzama = Convert.ToInt32(odr[7]);
+                        alap.Leiras = Convert.ToString(odr[8]);
+                        alap.FoglalatID = Convert.ToInt32(odr[9]);
+                        alap.MemoriFoglalat = Convert.ToInt64(odr[10]);
+                        alap.MemoriaSzama = Convert.ToInt32(odr[11]);
+                        alap.VideoFoglalatId = Convert.ToInt64(odr[12]);
+                        alap.SataSzama = Convert.ToInt64(odr[13]);
+                        alap.IdeSzama = Convert.ToInt64(odr[14]);
+
+                        ki.Add(cpu);
+                    }
+                }
+
+                return ki;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+        }
+
+        public static Alaplap GetAlaplap(long id)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select treat(value(p) as alap_typ).id, " +         //0
+                " treat(value(p) as alap_typ).nev, " +                       //1
+                " treat(value(p) as alap_typ).gyarto, " +                    //2
+                " treat(value(p) as alap_typ).ar, " +                        //3
+                " treat(value(p) as alap_typ).darabszam, " +                 //4
+                " treat(value(p) as alap_typ).akcio, " +                     //5
+                " treat(value(p) as alap_typ).atlag, " +                     //6
+                " treat(value(p) as alap_typ).ertekeles_szam, " +            //7
+                " treat(value(p) as alap_typ).leiras, " +                    //8
+                " treat(value(p) as alap_typ).foglalat, " +                  //9
+                " treat(value(p) as alap_typ).mem_foglalat, " +              //10
+                " treat(value(p) as alap_typ).mem_fog_szam, " +              //11
+                " treat(value(p) as alap_typ).video_foglalat " +             //12
+                " treat(value(p) as alap_typ).sata " +                       //13
+                " treat(value(p) as alap_typ).ide " +                        //14
+
+                " from " + raktar_tab + " p " +
+                " where id = id";
+                command = new OracleCommand(sqlKod, connection);
+                OracleDataReader odr = command.ExecuteReader();
+
+                Alaplap alap = new Alaplap();
+                odr.Read();
+                if (!odr.IsDBNull(0))
+                {
+                    alap.Id = Convert.ToInt64(odr[0]);
+                    alap.Nev = Convert.ToString(odr[1]);
+                    alap.GyartoId = Convert.ToInt64(odr[2]);
+                    alap.Ar = Convert.ToInt32(odr[3]);
+                    alap.RaktaronDarab = Convert.ToInt32(odr[4]);
+                    alap.AkcioSzazalek = Convert.ToDouble(odr[5]);
+                    alap.Atlag = Convert.ToDouble(odr[6]);
+                    alap.ErtekelesekSzama = Convert.ToInt32(odr[7]);
+                    alap.Leiras = Convert.ToString(odr[8]);
+                    alap.FoglalatID = Convert.ToInt32(odr[9]);
+                    alap.MemoriFoglalat = Convert.ToInt64(odr[10]);
+                    alap.MemoriaSzama = Convert.ToInt32(odr[11]);
+                    alap.VideoFoglalatId = Convert.ToInt64(odr[12]);
+                    alap.SataSzama = Convert.ToInt64(odr[13]);
+                    alap.IdeSzama = Convert.ToInt64(odr[14]);
+
+                }
+
+
+                return alap;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
         #endregion
     }
 }
