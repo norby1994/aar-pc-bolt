@@ -934,7 +934,7 @@ namespace PcBolt.DAO
                 " from " + raktar_tab + " p";
                 command = new OracleCommand(sqlKod, connection);
                 OracleDataReader odr = command.ExecuteReader();
-                List<Processzor> ki = new List<Processzor>();
+                List<Alaplap> ki = new List<Alaplap>();
 
                 while (odr.Read())
                 {
@@ -950,14 +950,14 @@ namespace PcBolt.DAO
                         alap.Atlag = Convert.ToDouble(odr[6]);
                         alap.ErtekelesekSzama = Convert.ToInt32(odr[7]);
                         alap.Leiras = Convert.ToString(odr[8]);
-                        alap.FoglalatID = Convert.ToInt32(odr[9]);
-                        alap.MemoriFoglalat = Convert.ToInt64(odr[10]);
+                        alap.CpuFoglalatId = Convert.ToInt64(odr[9]);
+                        alap.MemoriaFoglalatId = Convert.ToInt64(odr[10]);
                         alap.MemoriaSzama = Convert.ToInt32(odr[11]);
                         alap.VideoFoglalatId = Convert.ToInt64(odr[12]);
-                        alap.SataSzama = Convert.ToInt64(odr[13]);
-                        alap.IdeSzama = Convert.ToInt64(odr[14]);
+                        alap.SataSzama = Convert.ToInt32(odr[13]);
+                        alap.IdeSzama = Convert.ToInt32(odr[14]);
 
-                        ki.Add(cpu);
+                        ki.Add(alap);
                     }
                 }
 
@@ -1009,12 +1009,12 @@ namespace PcBolt.DAO
                     alap.Atlag = Convert.ToDouble(odr[6]);
                     alap.ErtekelesekSzama = Convert.ToInt32(odr[7]);
                     alap.Leiras = Convert.ToString(odr[8]);
-                    alap.FoglalatID = Convert.ToInt32(odr[9]);
-                    alap.MemoriFoglalat = Convert.ToInt64(odr[10]);
+                    alap.CpuFoglalatId = Convert.ToInt32(odr[9]);
+                    alap.MemoriaFoglalatId = Convert.ToInt64(odr[10]);
                     alap.MemoriaSzama = Convert.ToInt32(odr[11]);
                     alap.VideoFoglalatId = Convert.ToInt64(odr[12]);
-                    alap.SataSzama = Convert.ToInt64(odr[13]);
-                    alap.IdeSzama = Convert.ToInt64(odr[14]);
+                    alap.SataSzama = Convert.ToInt32(odr[13]);
+                    alap.IdeSzama = Convert.ToInt32(odr[14]);
 
                 }
 
@@ -1027,5 +1027,12 @@ namespace PcBolt.DAO
             }
         }
         #endregion
+
+        #region HozzaszolasKezeles
+        public static void AddUjHozzaszolas(Hozzaszolas h)
+        {
+
+        }
+        #endregion HozzaszolasKezeles
     }
 }

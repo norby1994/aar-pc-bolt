@@ -1,5 +1,6 @@
 ﻿using System;
 using PcBolt.DAO;
+using System.Data;
 
 namespace PcBolt.Beans.Aruk
 {
@@ -126,5 +127,11 @@ namespace PcBolt.Beans.Aruk
 
         #endregion
 
+        public DataSet GetAdatok(int valami)
+        {
+
+            return null;
+        }
+        
     }
 }

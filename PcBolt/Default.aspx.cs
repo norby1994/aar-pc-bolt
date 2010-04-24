@@ -18,6 +18,7 @@ namespace PcBolt
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+         
         }
 
         protected void szovegCsere(object sender, EventArgs e)
