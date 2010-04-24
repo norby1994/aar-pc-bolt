@@ -13,7 +13,8 @@ create table hozzaszolas_tab (
 	aru			number references raktar_tab(id),
 	felhasz		number references felhasznalo_tab(id),
 	datum		timestamp,
-	szoveg		varchar2(4000)
+	szoveg		varchar2(4000),
+	ellenorzott number(1)
 );
 
 create trigger hozzaszolas_tri

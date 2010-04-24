@@ -1,0 +1,15 @@
+start felhasznalo_tab_gen.sql
+start arucikk_typ_gen.sql
+
+
+
+start alaplap_typ_gen.sql
+start cpu_typ_gen.sql
+start hdd_typ_gen.sql
+start video_typ_gen.sql
+start memoria_typ_gen.sql
+start felhasznalo_tab_gen.sql
+start raktar_tab_gen.sql
+start szamla_tab_gen.sql
+start tetel_tab_gen.sql
+start hozzaszolas_tab_gen.sql;
