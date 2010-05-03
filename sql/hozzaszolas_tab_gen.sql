@@ -23,5 +23,6 @@ create trigger hozzaszolas_tri
 	begin
 		select hozzaszolas_seq.nextval into :new.id from dual;
 		select sysdate into :new.datum from dual;
+		select 0 into :new.elenorzott from dual;
 	end;
 /

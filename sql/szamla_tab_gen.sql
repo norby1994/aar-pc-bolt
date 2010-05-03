@@ -18,5 +18,6 @@ create trigger szamla_tri
 	for each row
 	begin
 		select szamla_seq.nextval into :new.id from dual;
+		select sysdate into :new.ido from dual;
 	end;
 /
