@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PcBolt.Beans.Aruk
 {
-    public abstract class AruCikk
+    public class AruCikk
     {
         public AruCikk()
         {

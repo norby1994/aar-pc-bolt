@@ -1,5 +1,6 @@
 ﻿using System;
 using PcBolt.Beans.Aruk;
+using PcBolt.DAO;
 
 namespace PcBolt.Beans
 {
@@ -20,12 +21,26 @@ namespace PcBolt.Beans
             get { return aruCikkId; }
             set { aruCikkId = value; }
         }
+
         long felhasznaloId = -1;
+        Felhasznalo felh = null;
 
         public long FelhasznaloId
         {
             get { return felhasznaloId; }
             set { felhasznaloId = value; }
+        }
+
+        public Felhasznalo Felhasznalo
+        {
+            get
+            {
+                if (felh == null)
+                {
+                    felh = Adatbazis.GetFelhasznalo(felhasznaloId);
+                }
+                return felh;
+            }
         }
         bool ellenorzott = false;
 
@@ -50,6 +65,11 @@ namespace PcBolt.Beans
             set { datum = value; }
         }
         #endregion
+
+        public Hozzaszolas()
+        {
+
+        }
 
         public Hozzaszolas(Szemely szemely, AruCikk aru, DateTime datum, string szoveg)
         {
