@@ -30,15 +30,18 @@ namespace PcBolt.Beans.Aruk
             get { return nev; }
             set { nev = value; }
         }
-        int ar = 0;
+        int alapar = 0;
 
         /// <summary>
         /// Az arucikk alap ara, akcio nelkul
         /// </summary>
         public int Ar
         {
-            get { return ar; }
-            set { ar = value; }
+            get
+            {
+                return Convert.ToInt32( alapar - akcioSzazalek * alapar/100);
+            }
+            set { alapar = value; }
         }
         string leiras = "";
 
@@ -50,7 +53,7 @@ namespace PcBolt.Beans.Aruk
             get { return leiras; }
             set { leiras = value; }
         }
-        double akcioSzazalek = 100;
+        double akcioSzazalek = 0;
 
         /// <summary>
         /// Mennyi szazalek akcio van a termeken
@@ -68,8 +71,7 @@ namespace PcBolt.Beans.Aruk
         /// </summary>
         public Boolean Akcios
         {
-            get { return akcios; }
-            set { akcios = value; }
+            get { return akcioSzazalek != 0; }
         }
 
         long gyartoId = 0;

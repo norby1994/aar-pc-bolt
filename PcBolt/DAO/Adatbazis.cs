@@ -30,6 +30,7 @@ namespace PcBolt.DAO
         static OracleConnection connection = new OracleConnection(oradb);
         static string sqlKod;
         static OracleCommand command = new OracleCommand("", connection);
+        static OracleDataReader dr;
         #endregion
 
         #region Kiegeszito hashmapek
@@ -1184,7 +1185,7 @@ namespace PcBolt.DAO
 
         #region SzamlaKezelest
 
-        public  static void AddSzamla(Szamla szamla)
+        public static void AddSzamla(Szamla szamla)
         {
             try
             {
@@ -1208,10 +1209,10 @@ namespace PcBolt.DAO
                     sqlKod = "insert into " + tetel_tab +
                         "(aru, szamla, darab, ar) values (:aru, :szamla, :darab, :ar)";
                     command = new OracleCommand(sqlKod, connection);
-                    command.Parameters.Add(new OracleParameter(":aru",tetel.AruId));
-                    command.Parameters.Add(new OracleParameter(":szamla",aktualisIndex));
-                    command.Parameters.Add(new OracleParameter(":darab",tetel.Darab));
-                    command.Parameters.Add(new OracleParameter(":ar",tetel.Ar));
+                    command.Parameters.Add(new OracleParameter(":aru", tetel.AruId));
+                    command.Parameters.Add(new OracleParameter(":szamla", aktualisIndex));
+                    command.Parameters.Add(new OracleParameter(":darab", tetel.Darab));
+                    command.Parameters.Add(new OracleParameter(":ar", tetel.Ar));
                     command.ExecuteNonQuery();
                 }
 
@@ -1223,7 +1224,91 @@ namespace PcBolt.DAO
             }
         }
 
+        public static Szamla GetSzamla(long id)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select * from " + szamla_tab + "where id = :id";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":id", id));
+                dr = command.ExecuteReader();
+                Szamla ki = new Szamla();
+                ki.Id = id;
+                if (dr.Read())
+                {
+                    ki.FelhasznaloId = Convert.ToInt64(dr["felhasz"]);
+                    ki.Datum = (DateTime)dr["datum"];
+                }
+                sqlKod = "select * from " + tetel_tab + "where szamla = :id";
+                commandBeallitas();
+                command.Parameters.Add(new OracleParameter(":id", id));
+                dr = command.ExecuteReader();
+                while (dr.Read())
+                {
+                    Tetel t = new Tetel();
+                    t.SzamlaId = id;
+                    t.AruId = Convert.ToInt64(dr["aru"]);
+                    t.Ar = Convert.ToInt32(dr["ar"]);
+                    t.Darab = Convert.ToInt32(dr["darab"]);
+                    ki.Tetelek.Add(t);
+                }
+
+                return ki;
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+            }
+        }
+
 
         #endregion
+
+        #region Akcio kezeles
+        public static List<AruCikk> GetAkciosAruk()
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select * from" + raktar_tab + "where akcio <> 0";
+                commandBeallitas();
+                dr = command.ExecuteReader();
+                List<AruCikk> ki = new List<AruCikk>();
+                while (dr.Read())
+                {
+                    ki.Add(getArucikkRaktarSorbol(dr));
+                }
+                return ki;
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+            }
+        }
+        #endregion
+
+        private static void commandBeallitas()
+        {
+            command = new OracleCommand(sqlKod, connection);
+        }
+
+        private static AruCikk getArucikkRaktarSorbol(OracleDataReader dr)
+        {
+            AruCikk aru = new AruCikk();
+            aru.Id = Convert.ToInt64(dr["id"]); ;
+            aru.Nev = Convert.ToString(dr["nev"]);
+            aru.GyartoId = Convert.ToInt64(dr["gyarto"]);
+            aru.Ar = Convert.ToInt32(dr["ar"]);
+            aru.RaktaronDarab = Convert.ToInt32(dr["darabszam"]);
+            aru.AkcioSzazalek = Convert.ToDouble(dr["akcio"]);
+            aru.Atlag = Convert.ToDouble(dr["atlag"]);
+            aru.ErtekelesekSzama = Convert.ToInt32(dr["ertekeles_szam"]);
+            aru.Leiras = Convert.ToString(dr["leiras"]);
+            return aru;
+        }
+
     }
 }
