@@ -6,6 +6,7 @@ using Oracle.DataAccess.Client;
 using Oracle.DataAccess.Types;
 using PcBolt.Exceptions;
 using PcBolt.Beans.Aruk;
+using PcBolt.Beans.SzamlaBeans;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -20,8 +21,12 @@ namespace PcBolt.DAO
         static string video_foglalat_tab = "video_foglalat_tab";
         static string hdd_csatolo_tav = "hdd_csatolok_tab";
         static string memoria_tipus_tab = "memoria_tip_tab";
-        static string gyarto_tab = "gyarto_tab";
-        static string raktar_tab = "raktar_tab";
+        static string gyarto_tab = " gyarto_tab ";
+        static string raktar_tab = " raktar_tab ";
+        static string hozzaszolas_tab = " hozzaszolas_tab ";
+        static string szamla_tab = " szamla_tab ";
+        static string szamla_seq = " szamla_seq ";
+        static string tetel_tab = " tetel_tab ";
         static OracleConnection connection = new OracleConnection(oradb);
         static string sqlKod;
         static OracleCommand command = new OracleCommand("", connection);
@@ -167,6 +172,42 @@ namespace PcBolt.DAO
 
         }
 
+        public static Felhasznalo GetFelhasznalo(long id)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select * from " + felhasznalo_tab +
+                    " where id = :id";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":id", id));
+                OracleDataReader odr = command.ExecuteReader();
+                string s = command.CommandText;
+                Felhasznalo ki = new Felhasznalo();
+
+                if (odr.Read())
+                {
+                    ki.Id = Convert.ToInt64(odr["id"]);
+                    ki.FelhasznaloNev = Convert.ToString(odr["felhasznev"]);
+                    ki.Teljesnev = Convert.ToString(odr["teljesnev"]);
+                    ki.Varos = Convert.ToString(odr["varos"]);
+                    ki.Utca = Convert.ToString(odr["utca"]);
+                    ki.Iranyitoszam = Convert.ToString(odr["iranyitoszam"]);
+                }
+                else
+                {
+                    throw new NincsIlyenFelhasznaloException();
+                }
+                return ki;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+
+        }
+
 
         public static string GetFelhasznaloNev()
         {
@@ -260,6 +301,40 @@ namespace PcBolt.DAO
             finally
             {
                 connection.Close();
+            }
+        }
+
+        #endregion
+
+        #region Arucikk kezeles
+        public static AruCikk GetArucikk(long id)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select * from " + raktar_tab + "where id = :id";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":id", id));
+                OracleDataReader dr = command.ExecuteReader();
+                AruCikk aru = new AruCikk();
+                if (dr.Read())
+                {
+                    aru.Id = id;
+                    aru.Nev = Convert.ToString(dr["nev"]);
+                    aru.GyartoId = Convert.ToInt64(dr["gyarto"]);
+                    aru.Ar = Convert.ToInt32(dr["ar"]);
+                    aru.RaktaronDarab = Convert.ToInt32(dr["darabszam"]);
+                    aru.AkcioSzazalek = Convert.ToDouble(dr["akcio"]);
+                    aru.Atlag = Convert.ToDouble(dr["atlag"]);
+                    aru.ErtekelesekSzama = Convert.ToInt32(dr["ertekeles_szam"]);
+                    aru.Leiras = Convert.ToString(dr["leiras"]);
+                }
+                return aru;
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
             }
         }
 
@@ -1031,8 +1106,124 @@ namespace PcBolt.DAO
         #region HozzaszolasKezeles
         public static void AddUjHozzaszolas(Hozzaszolas h)
         {
-
+            try
+            {
+                connection.Open();
+                sqlKod = "insert into + " + hozzaszolas_tab + " values("
+                    + ":id, :aru, :felhasz, :datum, :szoveg, :ellenorzott)";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":id", h.Id));
+                command.Parameters.Add(new OracleParameter(":aru", h.AruCikkId));
+                command.Parameters.Add(new OracleParameter(":felhasz", h.FelhasznaloId));
+                command.Parameters.Add(new OracleParameter(":datum", h.Datum));
+                command.Parameters.Add(new OracleParameter(":szoveg", h.Szoveg));
+                command.Parameters.Add(new OracleParameter(":ellenorzott", h.Ellenorzott));
+                command.ExecuteNonQuery();
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+            }
         }
+
+        public static List<Hozzaszolas> GetHozzaszolasok()
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select * from " + hozzaszolas_tab + ";";
+                command = new OracleCommand(sqlKod, connection);
+                OracleDataReader dr = command.ExecuteReader();
+                List<Hozzaszolas> ki = new List<Hozzaszolas>();
+                while (dr.Read())
+                {
+                    Hozzaszolas h = new Hozzaszolas();
+                    h.Id = Convert.ToInt64(dr["id"]);
+                    h.AruCikkId = Convert.ToInt64(dr["aru"]);
+                    h.FelhasznaloId = Convert.ToInt64(dr["felhasz"]);
+                    h.Datum = (DateTime)dr["datum"];
+                    h.Szoveg = Convert.ToString(dr["szoveg"]);
+                    h.Ellenorzott = Convert.ToBoolean(dr["ellenorzott"]);
+                    ki.Add(h);
+                }
+                return ki;
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+            }
+        }
+
+        public static void HozzaszolasEllenorzes(Hozzaszolas h)
+        {
+            HozzaszolasEllenorzes(h.Id);
+        }
+
+        public static void HozzaszolasEllenorzes(long id)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "update " + hozzaszolas_tab + " set ellenorzott = 1 where " +
+                    " id = :id";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":id", id));
+                command.ExecuteNonQuery();
+
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+            }
+        }
+
         #endregion HozzaszolasKezeles
+
+        #region SzamlaKezelest
+
+        public  static void AddSzamla(Szamla szamla)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "insert into " + szamla_tab +
+                    "(felhasz) values(:felhasz)";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":felhasz", szamla.FelhasznaloId));
+                command.ExecuteNonQuery();
+
+                long aktualisIndex = -1;
+                sqlKod = "select " + szamla_seq + ".CURRVAL from dual";
+                command = new OracleCommand(sqlKod, connection);
+                OracleDataReader dr = command.ExecuteReader();
+                if (dr.Read())
+                {
+                    aktualisIndex = Convert.ToInt64(dr[0]);
+                }
+                foreach (Tetel tetel in szamla.Tetelek)
+                {
+                    sqlKod = "insert into " + tetel_tab +
+                        "(aru, szamla, darab, ar) values (:aru, :szamla, :darab, :ar)";
+                    command = new OracleCommand(sqlKod, connection);
+                    command.Parameters.Add(new OracleParameter(":aru",tetel.AruId));
+                    command.Parameters.Add(new OracleParameter(":szamla",aktualisIndex));
+                    command.Parameters.Add(new OracleParameter(":darab",tetel.Darab));
+                    command.Parameters.Add(new OracleParameter(":ar",tetel.Ar));
+                    command.ExecuteNonQuery();
+                }
+
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+            }
+        }
+
+
+        #endregion
     }
 }

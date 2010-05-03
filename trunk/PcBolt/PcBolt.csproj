@@ -55,6 +55,8 @@
     <Compile Include="Beans\Aruk\Videokartya.cs" />
     <Compile Include="Beans\Felhasznalo.cs" />
     <Compile Include="Beans\Hozzaszolas.cs" />
+    <Compile Include="Beans\Szamla\Szamla.cs" />
+    <Compile Include="Beans\Szamla\Tetel.cs" />
     <Compile Include="Beans\Szemely.cs" />
     <Compile Include="DAO\Adatbazis.cs" />
     <Compile Include="Default.aspx.cs">
@@ -86,7 +88,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>4048</DevelopmentServerPort>
+          <DevelopmentServerPort>2541</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
