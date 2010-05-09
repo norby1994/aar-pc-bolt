@@ -16,9 +16,9 @@ create or replace type hdd_typ under arucikk_typ(
 		ar number,
 		darabszam number,
 		csatolo number,
-		meret number,		
-	)return self as result
-);
+		meret number	
+	)return self as result)
+;
 /
 
 create or replace type body hdd_typ as
