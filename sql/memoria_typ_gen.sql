@@ -1,8 +1,24 @@
+drop sequence memoria_tip_seq;
 drop table memoria_tip_tab;
+
 create table memoria_tip_tab (
 	id			number,
 	nev			char(20)
 );
+
+create sequence memoria_tip_seq
+	start with 1
+	increment by 1
+	nomaxvalue
+;
+
+create trigger memoria_tip_trigger
+	before insert on memoria_tip_tab
+	for each row
+	begin
+		select memoria_tip_seq.nextval into :new.id from dual;
+	end;
+/
 
 create or replace type memoria_typ under arucikk_typ (
 	tipus		number,

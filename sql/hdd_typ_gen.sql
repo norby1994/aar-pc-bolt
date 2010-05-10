@@ -1,11 +1,24 @@
+drop sequence hdd_csatolok_seq;
 drop table hdd_csatolok_tab;
+
 create  table hdd_csatolok_tab (
 	id		number primary key,
 	nev		char(20)
 );
 
-insert into hdd_csatolok_tab values(1, 'IDE');
-insert into hdd_csatolok_tab values(2, 'SATA');
+create sequence hdd_csatolok_seq
+	start with 1
+	increment by 1
+	nomaxvalue
+;
+
+create trigger hdd_csatolok_trigger
+	before insert on hdd_csatolok_tab
+	for each row
+	begin
+		select hdd_csatolok_seq.nextval into :new.id from dual;
+	end;
+/
 
 create or replace type hdd_typ under arucikk_typ(
 	csatolo		number,

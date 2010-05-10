@@ -1,0 +1,31 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="MasterPage.master.cs" Inherits="PcBolt.View.MasterPage" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>Ttile</title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+     <link rel="Stylesheet" type="text/css" href="styles.css" />
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+        <asp:Menu ID="menu" runat="server" Orientation="Horizontal" StaticSubMenuIndent="10px" CssClass="menu" Width="30%">
+            <DynamicMenuItemStyle CssClass="dynamicMenuItem" />
+            <Items>
+                <asp:MenuItem Text="Kezdőlap" Value="Default" NavigateUrl="~/View/Default.aspx" />
+                <asp:MenuItem Text="Regisztrálás" Value="Register" NavigateUrl="~/View/Register.aspx" />
+                <asp:MenuItem Text="Belépés" Value="Login" NavigateUrl="~/View/Login.aspx" />
+                <asp:MenuItem Text="Kilépés" Value="Logout" NavigateUrl="~/View/Default.aspx?action=logout" />
+            </Items>            
+        </asp:Menu>
+        
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+        
+        </asp:ContentPlaceHolder>
+    </div>
+    </form>
+</body>
+</html>

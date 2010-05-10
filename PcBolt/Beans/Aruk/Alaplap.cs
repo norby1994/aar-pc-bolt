@@ -35,8 +35,8 @@ namespace PcBolt.Beans.Aruk
 
         public int MemoriaSzama
         {
-            get { return MemoriaSzama; }
-            set { MemoriaSzama = value; }
+            get { return memoriaSzama; }
+            set { memoriaSzama = value; }
         }
 
         long videoFoglalatId = -1;

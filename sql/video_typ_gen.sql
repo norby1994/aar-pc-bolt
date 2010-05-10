@@ -10,7 +10,7 @@ create sequence video_foglalat_seq
 
 create table video_foglalat_tab (
 	id		number primary key,
-	neve	varchar2(20)
+	nev	varchar2(20)
 );
 
 create trigger video_foglalat_tri

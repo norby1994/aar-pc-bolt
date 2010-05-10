@@ -17,12 +17,12 @@ create table hozzaszolas_tab (
 	ellenorzott number(1)
 );
 
-create trigger hozzaszolas_tri
+create or replace trigger hozzaszolas_tri
 	before insert on hozzaszolas_tab
 	for each row
 	begin
 		select hozzaszolas_seq.nextval into :new.id from dual;
 		select sysdate into :new.datum from dual;
-		select 0 into :new.elenorzott from dual;
+		:new.ellenorzott := 0;
 	end;
 /

@@ -1,0 +1,16 @@
+﻿.menu
+{
+	background-color:#C0CFD1;	
+	font-size: medium;
+	font-family:Verdana;
+	font-weight:bold;
+	height: 42px;
+	width: 200px;	
+}
+
+.menu.dynamicMenuItem
+{
+	padding:5px;
+	color:White;
+	background-color:#5D7B9D;
+}
