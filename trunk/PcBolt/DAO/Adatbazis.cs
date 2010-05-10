@@ -15,7 +15,7 @@ namespace PcBolt.DAO
     public static class Adatbazis
     {
         #region Kapcsolatok
-        static string oradb = "Data Source=XE;User Id=peti; Password=peti;";
+        static string oradb = "Data Source=XE; User Id=peti; Password=peti;";
         static string felhasznalo_tab = "felhasznalo_tab";
         static string cpu_foglalat_tab = "cpu_foglalat_tab";
         static string video_foglalat_tab = "video_foglalat_tab";
@@ -76,7 +76,6 @@ namespace PcBolt.DAO
 
 
         #endregion
-
 
         public static void Init()
         {
@@ -244,16 +243,38 @@ namespace PcBolt.DAO
                 command = new OracleCommand(sqlKod, connection);
                 command.Parameters.Add(new OracleParameter(":felhasznev", felhasznev));
                 OracleDataReader odr = command.ExecuteReader();
-                return odr.HasRows;
-
+                return odr.HasRows; 
             }
             finally
             {
                 connection.Close();
             }
-
         }
 
+        /// <summary>
+        /// Letezik-e az adott felhasznalonev a megadott jelszóval
+        /// </summary>
+        /// <param name="felhasznev"></param>
+        /// <param name="jelszo"></param>
+        /// <returns></returns>
+        public static bool FelhasznaloEsJelszoLetezik(string felhasznev, string jelszo)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select felhasznev from " + felhasznalo_tab +
+                    " where felhasznev like :felhasznev and jelszo like :jelszo";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":felhasznev", felhasznev));
+                command.Parameters.Add(new OracleParameter(":jelszo", jelszo));
+                OracleDataReader odr = command.ExecuteReader();
+                return odr.HasRows;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
 
         #endregion
 
@@ -282,27 +303,43 @@ namespace PcBolt.DAO
             }
         }
 
-        private static Hashtable GetKiegeszitoTabla(string tabla)
+        private static void TorolKiegeszitoTablabol(string nev, string tabla)
         {
             try
             {
                 connection.Open();
-                sqlKod = "select * from " + tabla;
+                sqlKod = "delete from " + tabla + " where nev = ':nev'";
                 command = new OracleCommand(sqlKod, connection);
-                OracleDataReader odr = command.ExecuteReader();
-                Hashtable ki = new Hashtable();
-                while (odr.Read())
-                {
-                    long id = Convert.ToInt64(odr["id"]);
-                    string nev = Convert.ToString(odr["nev"]).Trim();
-                    ki.Add(id, nev);
-                }
-                return ki;
+                command.Parameters.Add(new OracleParameter(":nev", nev));
+                command.ExecuteNonQuery();
             }
             finally
             {
                 connection.Close();
             }
+        }
+
+        private static Hashtable GetKiegeszitoTabla(string tabla)
+        {
+            Hashtable ki = new Hashtable();
+            try
+            {
+                connection.Open();
+                sqlKod = "select * from " + tabla;
+                command = new OracleCommand(sqlKod, connection);
+                OracleDataReader odr = command.ExecuteReader();                
+                while (odr.Read())
+                {
+                    long id = Convert.ToInt64(odr["id"]);
+                    string nev = Convert.ToString(odr["nev"]).Trim();
+                    ki.Add(id, nev);
+                }                
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return ki;
         }
 
         #endregion
@@ -366,9 +403,14 @@ namespace PcBolt.DAO
         /// Uj processor foglalatot ad hozza az adatbazishoz
         /// </summary>
         /// <param name="nev">Foglalat neve</param>
-        public static void AddProcesszorFoglala(string nev)
+        public static void AddProcesszorFoglalat(string nev)
         {
             AddKiegeszitoTablaba(nev, cpu_foglalat_tab);
+        }
+
+        public static void TorolProcesszorFoglalat(string nev)
+        {
+            TorolKiegeszitoTablabol(nev, cpu_foglalat_tab);
         }
 
         /// <summary>
@@ -533,7 +575,12 @@ namespace PcBolt.DAO
             AddKiegeszitoTablaba(nev, video_foglalat_tab);
         }
 
-        private static Hashtable GetVideokartyaFoglalatok()
+        public static void TorolVideokartyaFoglalat(string nev)
+        {
+            TorolKiegeszitoTablabol(nev, video_foglalat_tab);
+        }
+
+        public static Hashtable GetVideokartyaFoglalatok()
         {
             return GetKiegeszitoTabla(video_foglalat_tab);
         }
@@ -688,6 +735,11 @@ namespace PcBolt.DAO
             AddKiegeszitoTablaba(nev, memoria_tipus_tab);
         }
 
+        public static void TorolMemoriaTipus(string nev)
+        {
+            TorolKiegeszitoTablabol(nev, memoria_tipus_tab);
+        }
+
         public static Hashtable GetMemoriaTipusok()
         {
             return GetKiegeszitoTabla(memoria_tipus_tab);
@@ -827,6 +879,11 @@ namespace PcBolt.DAO
             AddKiegeszitoTablaba(nev, hdd_csatolo_tav);
         }
 
+        public static void TorolHddCsatolo(string nev)
+        {
+            TorolKiegeszitoTablabol(nev, hdd_csatolo_tav);
+        }
+
         public static Hashtable GetHddCsatolok()
         {
             return GetKiegeszitoTabla(hdd_csatolo_tav);
@@ -937,11 +994,11 @@ namespace PcBolt.DAO
             {
                 connection.Open();
                 sqlKod = "INSERT INTO " + raktar_tab +
-                    " values(hdd_typ(:nev, :gyarto, :ar, :darab_szam, :darab_szam" +
-                    " :csatolo, :meret )";
+                    " values(hdd_typ(:gyarto, :nev, :ar, :darab_szam, " +
+                    " :csatolo, :meret ))";
                 command = new OracleCommand(sqlKod, connection);
-                command.Parameters.Add(new OracleParameter(":nev", h.Nev));
                 command.Parameters.Add(new OracleParameter(":gyarto", h.GyartoId));
+                command.Parameters.Add(new OracleParameter(":nev", h.Nev));
                 command.Parameters.Add(new OracleParameter(":ar", h.Ar));
                 command.Parameters.Add(new OracleParameter(":darab_szam", h.RaktaronDarab));
                 command.Parameters.Add(new OracleParameter(":csatolo", h.CsatoloId));
@@ -963,11 +1020,11 @@ namespace PcBolt.DAO
             {
                 connection.Open();
                 sqlKod = "INSERT INTO " + raktar_tab +
-                    " values(alaplap_typ(:nev, :gyarto, :ar, :darab_szam, " +
+                    " values(alaplap_typ(:gyarto, :nev, :ar, :darab_szam, " +
                     " :foglalat, :mem_foglalat, :mem_szama, :video_foglalat, :sata, :ide))";
                 command = new OracleCommand(sqlKod, connection);
-                command.Parameters.Add(new OracleParameter(":nev", alap.Nev));
                 command.Parameters.Add(new OracleParameter(":gyarto", alap.GyartoId));
+                command.Parameters.Add(new OracleParameter(":nev", alap.Nev));                
                 command.Parameters.Add(new OracleParameter(":ar", alap.Ar));
                 command.Parameters.Add(new OracleParameter(":darab_szam", alap.RaktaronDarab));
                 command.Parameters.Add(new OracleParameter(":foglalat", alap.CpuFoglalatId));

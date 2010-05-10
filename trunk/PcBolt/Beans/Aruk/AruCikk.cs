@@ -64,8 +64,6 @@ namespace PcBolt.Beans.Aruk
             set { akcioSzazalek = value; }
         }
         
-        Boolean akcios = false;
-
         /// <summary>
         /// Akcios-e a termek
         /// </summary>
