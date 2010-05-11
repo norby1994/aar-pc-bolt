@@ -4,6 +4,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using PcBolt.Beans;
+using PcBolt.Beans.Aruk;
+using PcBolt.DAO;
 
 namespace PcBolt.View
 {
@@ -15,6 +17,7 @@ namespace PcBolt.View
             {
                 Session["user"] = null;
                 Session["isAdmin"] = false;
+                Session["basket"] = null;
             }
 
             lbl_welcome.Text = "Üdvözlünk a webshopunkban";
@@ -23,7 +26,7 @@ namespace PcBolt.View
             else if (Session["isAdmin"] != null && (bool)Session["isAdmin"])
                 lbl_welcome.Text += ", oh, mindenható adminisztrátor!";
             else
-                lbl_welcome.Text += "!";                
+                lbl_welcome.Text += "!";
         }
 
         protected void showMessage(string message)

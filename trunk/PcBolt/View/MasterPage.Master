@@ -1,4 +1,5 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="MasterPage.master.cs" Inherits="PcBolt.View.MasterPage" %>
+<%@ Reference Control="~/View/AlaplapControl.ascx" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +13,14 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        <asp:Menu ID="menu" runat="server" Orientation="Horizontal" StaticSubMenuIndent="10px" CssClass="menu" Width="30%">
+        <asp:Menu ID="menu" runat="server" Orientation="Horizontal" 
+            StaticSubMenuIndent="10px" CssClass="menu" Width="486px">
             <DynamicMenuItemStyle CssClass="dynamicMenuItem" />
             <Items>
                 <asp:MenuItem Text="Kezdőlap" Value="Default" NavigateUrl="~/View/Default.aspx" />
-                <asp:MenuItem Text="Regisztrálás" Value="Register" NavigateUrl="~/View/Register.aspx" />
                 <asp:MenuItem Text="Belépés" Value="Login" NavigateUrl="~/View/Login.aspx" />
+                <asp:MenuItem Text="Regisztrálás" Value="Register" NavigateUrl="~/View/Register.aspx" />
+                <asp:MenuItem Text="Keresés" Value="Search" NavigateUrl="~/View/Search.aspx"></asp:MenuItem>                
                 <asp:MenuItem Text="Kilépés" Value="Logout" NavigateUrl="~/View/Default.aspx?action=logout" />
             </Items>            
         </asp:Menu>

@@ -11,24 +11,24 @@
 namespace PcBolt.View {
     
     
-    public partial class Default {
+    public partial class HozzaszolasControl {
         
         /// <summary>
-        /// p1 control.
+        /// panel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder p1;
+        protected global::System.Web.UI.WebControls.Panel panel;
         
         /// <summary>
-        /// lbl_welcome control.
+        /// tb_comment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_welcome;
+        protected global::System.Web.UI.WebControls.TextBox tb_comment;
     }
 }

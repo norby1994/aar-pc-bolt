@@ -11,24 +11,42 @@
 namespace PcBolt.View {
     
     
-    public partial class Default {
+    public partial class Basket {
         
         /// <summary>
-        /// p1 control.
+        /// label_nev control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder p1;
+        protected global::System.Web.UI.WebControls.Label label_nev;
         
         /// <summary>
-        /// lbl_welcome control.
+        /// placeholder1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_welcome;
+        protected global::System.Web.UI.WebControls.PlaceHolder placeholder1;
+        
+        /// <summary>
+        /// label_ar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label label_ar;
+        
+        /// <summary>
+        /// btn_order control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btn_order;
     }
 }

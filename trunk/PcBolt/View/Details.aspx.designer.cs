@@ -11,24 +11,33 @@
 namespace PcBolt.View {
     
     
-    public partial class Default {
+    public partial class Details {
         
         /// <summary>
-        /// p1 control.
+        /// placeholder1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder p1;
+        protected global::System.Web.UI.WebControls.PlaceHolder placeholder1;
         
         /// <summary>
-        /// lbl_welcome control.
+        /// placeholder2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_welcome;
+        protected global::System.Web.UI.WebControls.PlaceHolder placeholder2;
+        
+        /// <summary>
+        /// tb_comment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tb_comment;
     }
 }
