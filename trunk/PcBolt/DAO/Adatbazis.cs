@@ -1048,21 +1048,21 @@ namespace PcBolt.DAO
             try
             {
                 connection.Open();
-                sqlKod = "select treat(value(p) as alap_typ).id, " +         //0
-                " treat(value(p) as alap_typ).nev, " +                       //1
-                " treat(value(p) as alap_typ).gyarto, " +                    //2
-                " treat(value(p) as alap_typ).ar, " +                        //3
-                " treat(value(p) as alap_typ).darabszam, " +                 //4
-                " treat(value(p) as alap_typ).akcio, " +                     //5
-                " treat(value(p) as alap_typ).atlag, " +                     //6
-                " treat(value(p) as alap_typ).ertekeles_szam, " +            //7
-                " treat(value(p) as alap_typ).leiras, " +                    //8
-                " treat(value(p) as alap_typ).foglalat, " +                  //9
-                " treat(value(p) as alap_typ).mem_foglalat, " +                  //10
-                " treat(value(p) as alap_typ).mem_fog_szam, " +               //11
-                " treat(value(p) as alap_typ).video_foglalat " +                    //12
-                " treat(value(p) as alap_typ).sata " +                    //13
-                " treat(value(p) as alap_typ).ide " +                    //14
+                sqlKod = "select treat(value(p) as alaplap_typ).id, " +         //0
+                " treat(value(p) as alaplap_typ).nev, " +                       //1
+                " treat(value(p) as alaplap_typ).gyarto, " +                    //2
+                " treat(value(p) as alaplap_typ).ar, " +                        //3
+                " treat(value(p) as alaplap_typ).darabszam, " +                 //4
+                " treat(value(p) as alaplap_typ).akcio, " +                     //5
+                " treat(value(p) as alaplap_typ).atlag, " +                     //6
+                " treat(value(p) as alaplap_typ).ertekeles_szam, " +            //7
+                " treat(value(p) as alaplap_typ).leiras, " +                    //8
+                " treat(value(p) as alaplap_typ).foglalat, " +                  //9
+                " treat(value(p) as alaplap_typ).mem_foglalat, " +                  //10
+                " treat(value(p) as alaplap_typ).mem_fog_szam, " +               //11
+                " treat(value(p) as alaplap_typ).video_foglalat, " +                    //12
+                " treat(value(p) as alaplap_typ).sata, " +                    //13
+                " treat(value(p) as alaplap_typ).ide " +                    //14
 
                 " from " + raktar_tab + " p";
                 command = new OracleCommand(sqlKod, connection);
