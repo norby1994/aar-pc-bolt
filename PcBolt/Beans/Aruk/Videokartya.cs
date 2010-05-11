@@ -24,7 +24,7 @@ namespace PcBolt.Beans.Aruk
 
         public string Foglalat
         {
-            get { return Adatbazis.Video_foglalaok[foglalatId].ToString() ; }
+            get { return Adatbazis.Video_foglalatok[foglalatId].ToString() ; }
         }
 
         int memoriaMeret = -1;

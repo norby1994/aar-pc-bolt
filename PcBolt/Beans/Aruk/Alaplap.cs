@@ -26,9 +26,9 @@ namespace PcBolt.Beans.Aruk
             set { memoriaFoglalatId = value; }
         }
 
-        public string MemoriFoglalat
+        public string MemoriaFoglalat
         {
-            get { return Adatbazis.Cpu_foglalatok[memoriaFoglalatId].ToString(); }
+            get { return Adatbazis.Memoria_tipusok[memoriaFoglalatId].ToString(); }
         }
 
         int memoriaSzama = -1;
@@ -49,7 +49,7 @@ namespace PcBolt.Beans.Aruk
 
         public string VideoFoglalat
         {
-            get { return Adatbazis.Video_foglalaok[videoFoglalatId].ToString(); }
+            get { return Adatbazis.Video_foglalatok[videoFoglalatId].ToString(); }
         }
         int sataSzama = -1;
 

@@ -5,6 +5,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using PcBolt.Beans;
 using PcBolt.DAO;
+using PcBolt.Beans.Aruk;
 
 namespace PcBolt.View
 {
@@ -30,6 +31,7 @@ namespace PcBolt.View
             {
                 Session["user"] = Adatbazis.GetFelhasznalo(tb_felhasznaloNev.Text);
                 Session["isAdmin"] = false;
+                Session["basket"] = new List<AruCikk>();
                 Response.Redirect("~/View/Default.aspx");
             }
             else

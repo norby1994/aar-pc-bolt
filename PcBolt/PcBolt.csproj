@@ -95,12 +95,40 @@
     <Compile Include="DAO\Adatbazis.cs" />
     <Compile Include="Exceptions\SajatExceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\AlaplapControl.ascx.cs">
+      <DependentUpon>AlaplapControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\AlaplapControl.ascx.designer.cs">
+      <DependentUpon>AlaplapControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="View\Basket.aspx.cs">
+      <DependentUpon>Basket.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\Basket.aspx.designer.cs">
+      <DependentUpon>Basket.aspx</DependentUpon>
+    </Compile>
     <Compile Include="View\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="View\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="View\Details.aspx.cs">
+      <DependentUpon>Details.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\Details.aspx.designer.cs">
+      <DependentUpon>Details.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="View\HozzaszolasControl.ascx.cs">
+      <DependentUpon>HozzaszolasControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\HozzaszolasControl.ascx.designer.cs">
+      <DependentUpon>HozzaszolasControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="View\Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
@@ -130,12 +158,24 @@
     <Compile Include="View\MasterPage.Master.designer.cs">
       <DependentUpon>MasterPage.Master</DependentUpon>
     </Compile>
+    <Compile Include="View\Search.aspx.cs">
+      <DependentUpon>Search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\Search.aspx.designer.cs">
+      <DependentUpon>Search.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="View\AlaplapControl.ascx" />
+    <Content Include="View\Basket.aspx" />
     <Content Include="View\Default.aspx" />
+    <Content Include="View\Details.aspx" />
+    <Content Include="View\HozzaszolasControl.ascx" />
     <Content Include="View\Login.aspx" />
     <Content Include="View\Management.aspx" />
     <Content Include="View\Register.aspx" />
+    <Content Include="View\Search.aspx" />
     <Content Include="View\styles.css" />
     <Content Include="View\MasterPage.Master" />
   </ItemGroup>

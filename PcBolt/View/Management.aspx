@@ -58,7 +58,7 @@
         </table>
     </asp:Panel>
     <br /><br />        
-    <asp:Panel runat="server" GroupingText="Áruk felvétele">
+    <asp:Panel runat="server" GroupingText="Áruk felvétele" Width="900px">
     <table>
         <tr>
             <td rowspan="3" valign="top">
@@ -109,7 +109,7 @@
                             Leírás:
                         </td>
                         <td>
-                            <asp:TextBox ID="tb_leiras" Rows="5" TextMode="MultiLine" runat="server" Width="136px"></asp:TextBox>
+                            <asp:TextBox ID="tb_leiras" Rows="9" TextMode="MultiLine" runat="server" Width="136px"></asp:TextBox>
                         </td>
                     </tr>
                 </table>

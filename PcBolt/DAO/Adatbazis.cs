@@ -34,7 +34,7 @@ namespace PcBolt.DAO
         #endregion
 
         #region Kiegeszito hashmapek
-        static private Hashtable gyartok = new Hashtable();
+        static private Hashtable gyartok ;
 
         public static Hashtable Gyartok
         {
@@ -42,7 +42,7 @@ namespace PcBolt.DAO
             set { Adatbazis.gyartok = value; }
         }
 
-        static private Hashtable cpu_foglalatok = new Hashtable();
+        static private Hashtable cpu_foglalatok;
 
         public static Hashtable Cpu_foglalatok
         {
@@ -50,15 +50,15 @@ namespace PcBolt.DAO
             set { Adatbazis.cpu_foglalatok = value; }
         }
 
-        static private Hashtable video_foglalaok = new Hashtable();
+        static private Hashtable video_foglalatok;
 
-        public static Hashtable Video_foglalaok
+        public static Hashtable Video_foglalatok
         {
-            get { return Adatbazis.video_foglalaok; }
-            set { Adatbazis.video_foglalaok = value; }
+            get { return Adatbazis.video_foglalatok; }
+            set { Adatbazis.video_foglalatok = value; }
         }
 
-        static private Hashtable memoria_tipusok = new Hashtable();
+        static private Hashtable memoria_tipusok ;
 
         public static Hashtable Memoria_tipusok
         {
@@ -66,7 +66,7 @@ namespace PcBolt.DAO
             set { Adatbazis.memoria_tipusok = value; }
         }
 
-        static private Hashtable hdd_csatolok = new Hashtable();
+        static private Hashtable hdd_csatolok;
 
         public static Hashtable Hdd_csatolok
         {
@@ -77,12 +77,14 @@ namespace PcBolt.DAO
 
         #endregion
 
-        public static void Init()
+        static Adatbazis()
         {
-            kiegeszitoFrissites();
-
+            gyartok = GetGyartok();
+            cpu_foglalatok = GetProcesszorFoglalatok();
+            video_foglalatok = GetVideokartyaFoglalatok();
+            memoria_tipusok = GetMemoriaTipusok();
+            hdd_csatolok = GetHddCsatolok();
         }
-
 
         public static void AddTermek(AruCikk aru)
         {
@@ -280,13 +282,6 @@ namespace PcBolt.DAO
 
         #region Kegeszito tablak
 
-        private static void kiegeszitoFrissites()
-        {
-            gyartok = GetGyartok();
-            cpu_foglalatok = GetProcesszorFoglalatok();
-            video_foglalaok = GetVideokartyaFoglalatok();
-        }
-
         private static void AddKiegeszitoTablaba(string nev, string tabla)
         {
             try
@@ -392,7 +387,7 @@ namespace PcBolt.DAO
         public static void AddGyarto(string nev)
         {
             AddKiegeszitoTablaba(nev, gyarto_tab);
-
+            gyartok = GetGyartok();
         }
 
         #endregion
@@ -406,6 +401,7 @@ namespace PcBolt.DAO
         public static void AddProcesszorFoglalat(string nev)
         {
             AddKiegeszitoTablaba(nev, cpu_foglalat_tab);
+            cpu_foglalatok = GetProcesszorFoglalatok();
         }
 
         public static void TorolProcesszorFoglalat(string nev)
@@ -573,6 +569,7 @@ namespace PcBolt.DAO
         public static void AddVideokartyaFoglalat(string nev)
         {
             AddKiegeszitoTablaba(nev, video_foglalat_tab);
+            video_foglalatok = GetVideokartyaFoglalatok();
         }
 
         public static void TorolVideokartyaFoglalat(string nev)
@@ -733,6 +730,7 @@ namespace PcBolt.DAO
         public static void AddMemoriaTipus(string nev)
         {
             AddKiegeszitoTablaba(nev, memoria_tipus_tab);
+            memoria_tipusok = GetMemoriaTipusok();
         }
 
         public static void TorolMemoriaTipus(string nev)
@@ -840,9 +838,10 @@ namespace PcBolt.DAO
                 " treat(value(p) as memoria_typ).meret, " +                     //10
                 " treat(value(p) as memoria_typ).sebesseg, " +                  //11
                 " from " + raktar_tab + " p " +
-                " where id:=id";
+                " where id = :id";
 
                 command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":id", id));
 
                 OracleDataReader odr = command.ExecuteReader();
                 Memoria memo = new Memoria();
@@ -877,6 +876,7 @@ namespace PcBolt.DAO
         public static void AddHddCsatolo(string nev)
         {
             AddKiegeszitoTablaba(nev, hdd_csatolo_tav);
+            hdd_csatolok = GetHddCsatolok();
         }
 
         public static void TorolHddCsatolo(string nev)
@@ -940,7 +940,7 @@ namespace PcBolt.DAO
             }
         }
 
-        public static Hdd GetHddk(int id)
+        public static Hdd GetHdd(int id)
         {
             try
             {
@@ -1108,25 +1108,26 @@ namespace PcBolt.DAO
             try
             {
                 connection.Open();
-                sqlKod = "select treat(value(p) as alap_typ).id, " +         //0
-                " treat(value(p) as alap_typ).nev, " +                       //1
-                " treat(value(p) as alap_typ).gyarto, " +                    //2
-                " treat(value(p) as alap_typ).ar, " +                        //3
-                " treat(value(p) as alap_typ).darabszam, " +                 //4
-                " treat(value(p) as alap_typ).akcio, " +                     //5
-                " treat(value(p) as alap_typ).atlag, " +                     //6
-                " treat(value(p) as alap_typ).ertekeles_szam, " +            //7
-                " treat(value(p) as alap_typ).leiras, " +                    //8
-                " treat(value(p) as alap_typ).foglalat, " +                  //9
-                " treat(value(p) as alap_typ).mem_foglalat, " +              //10
-                " treat(value(p) as alap_typ).mem_fog_szam, " +              //11
-                " treat(value(p) as alap_typ).video_foglalat " +             //12
-                " treat(value(p) as alap_typ).sata " +                       //13
-                " treat(value(p) as alap_typ).ide " +                        //14
+                sqlKod = "select treat(value(p) as alaplap_typ).id, " +         //0
+                " treat(value(p) as alaplap_typ).nev, " +                       //1
+                " treat(value(p) as alaplap_typ).gyarto, " +                    //2
+                " treat(value(p) as alaplap_typ).ar, " +                        //3
+                " treat(value(p) as alaplap_typ).darabszam, " +                 //4
+                " treat(value(p) as alaplap_typ).akcio, " +                     //5
+                " treat(value(p) as alaplap_typ).atlag, " +                     //6
+                " treat(value(p) as alaplap_typ).ertekeles_szam, " +            //7
+                " treat(value(p) as alaplap_typ).leiras, " +                    //8
+                " treat(value(p) as alaplap_typ).foglalat, " +                  //9
+                " treat(value(p) as alaplap_typ).mem_foglalat, " +              //10
+                " treat(value(p) as alaplap_typ).mem_fog_szam, " +              //11
+                " treat(value(p) as alaplap_typ).video_foglalat, " +             //12
+                " treat(value(p) as alaplap_typ).sata, " +                       //13
+                " treat(value(p) as alaplap_typ).ide " +                        //14
 
                 " from " + raktar_tab + " p " +
-                " where id = id";
+                " where id = :id";
                 command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":id", id));
                 OracleDataReader odr = command.ExecuteReader();
 
                 Alaplap alap = new Alaplap();
@@ -1167,7 +1168,7 @@ namespace PcBolt.DAO
             try
             {
                 connection.Open();
-                sqlKod = "insert into + " + hozzaszolas_tab + " values("
+                sqlKod = "insert into " + hozzaszolas_tab + " values("
                     + ":id, :aru, :felhasz, :datum, :szoveg, :ellenorzott)";
                 command = new OracleCommand(sqlKod, connection);
                 command.Parameters.Add(new OracleParameter(":id", h.Id));
@@ -1175,7 +1176,7 @@ namespace PcBolt.DAO
                 command.Parameters.Add(new OracleParameter(":felhasz", h.FelhasznaloId));
                 command.Parameters.Add(new OracleParameter(":datum", h.Datum));
                 command.Parameters.Add(new OracleParameter(":szoveg", h.Szoveg));
-                command.Parameters.Add(new OracleParameter(":ellenorzott", h.Ellenorzott));
+                command.Parameters.Add(new OracleParameter(":ellenorzott", h.Ellenorzott ? 1 : 0));
                 command.ExecuteNonQuery();
             }
             finally
@@ -1192,6 +1193,36 @@ namespace PcBolt.DAO
                 connection.Open();
                 sqlKod = "select * from " + hozzaszolas_tab + ";";
                 command = new OracleCommand(sqlKod, connection);
+                OracleDataReader dr = command.ExecuteReader();
+                List<Hozzaszolas> ki = new List<Hozzaszolas>();
+                while (dr.Read())
+                {
+                    Hozzaszolas h = new Hozzaszolas();
+                    h.Id = Convert.ToInt64(dr["id"]);
+                    h.AruCikkId = Convert.ToInt64(dr["aru"]);
+                    h.FelhasznaloId = Convert.ToInt64(dr["felhasz"]);
+                    h.Datum = (DateTime)dr["datum"];
+                    h.Szoveg = Convert.ToString(dr["szoveg"]);
+                    h.Ellenorzott = Convert.ToBoolean(dr["ellenorzott"]);
+                    ki.Add(h);
+                }
+                return ki;
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+            }
+        }
+
+        public static List<Hozzaszolas> GetHozzaszolasokTermekhez(long id)
+        {
+            try
+            {
+                connection.Open();
+                sqlKod = "select * from " + hozzaszolas_tab + " where aru = :id";
+                command = new OracleCommand(sqlKod, connection);
+                command.Parameters.Add(new OracleParameter(":id", id));
                 OracleDataReader dr = command.ExecuteReader();
                 List<Hozzaszolas> ki = new List<Hozzaszolas>();
                 while (dr.Read())
